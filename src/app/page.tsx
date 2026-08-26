@@ -2,6 +2,7 @@ import Faq from "@/components/Faq";
 import HeroScene from "@/components/HeroScene";
 import { faqs } from "@/content/faqs";
 import { landingSections } from "@/content/content";
+import QuestionnairePage from "./questionnaire-prototype/page";
 
 function Paragraphs({ text }: { text: string }) {
   return <>{text.split(/\n{2,}/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</>;
@@ -16,6 +17,7 @@ export default function Home() {
           <a href="#estate">Estate Planning</a>
           <a href="#faq">Veelgestelde vragen</a>
           <a href="#contact">Contact</a>
+        
         </nav>
       </header>
       <main id="top">
@@ -29,6 +31,29 @@ export default function Home() {
             <a className="button" href="#faq">Veelgestelde vragen <b>↓</b></a>
           </div>
         </section>
+        <section id="questionnaire" className="section">
+  <div className="wrap">
+    <p className="eyebrow">TESTAMENT</p>
+
+    <h2>Gegevens testament</h2>
+
+    <div className="accordions">
+      <details className="accordion">
+        <summary>
+          <span>_</span>
+          <strong>
+            Klik hier om de testamentvragenlijst te openen
+          </strong>
+        </summary>
+
+        <div className="answer">
+        <QuestionnairePage/>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+       
         {landingSections.slice(1).map((section, index) => (
           <section className={`section ${index % 2 ? "tint" : ""}`} key={section.title}>
             <div className="wrap grid">
