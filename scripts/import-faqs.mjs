@@ -13,7 +13,7 @@ const faqs = posts.map((post, index) => {
   let answer = "";
 
   const titleMatch = post.match(
-    /Title:\s*([\s\S]*?)(?=\nVraag:|\nAntwoord:|$)/i
+    /Title:\s*([\s\S]*?)(?=\n(?:Vraag|raag)\s*[:;]|\nAntwoord\s*[:;]|$)/i
   );
 
   if (titleMatch) {
@@ -21,7 +21,7 @@ const faqs = posts.map((post, index) => {
   }
 
   const questionMatch = post.match(
-    /(?:Vraag|raag)\s*:\s*([\s\S]*?)(?=\nAntwoord:|$)/i
+    /(?:Vraag|raag)\s*[:;]\s*([\s\S]*?)(?=\nAntwoord\s*[:;]|$)/i
   );
 
   if (questionMatch) {
@@ -29,11 +29,15 @@ const faqs = posts.map((post, index) => {
   }
 
   const answerMatch = post.match(
-    /Antwoord:\s*([\s\S]*)$/i
+    /Antwoord\s*[:;]\s*([\s\S]*)$/i
   );
 
   if (answerMatch) {
     answer = answerMatch[1].trim();
+  } else if (questionMatch) {
+    const [firstLine, ...remainingLines] = question.split("\n");
+    question = firstLine.trim();
+    answer = remainingLines.join("\n").trim();
   }
 
   // Standalone articles without Vraag/Antwoord

@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, FormEvent, useContext, useMemo, useState } from "react";
+import {
+  createContext,
+  FormEvent,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 type YesNo = "" | "yes" | "no";
 type Values = Record<string, string>;
@@ -57,11 +64,10 @@ const personalFields: FieldDef[] = [
     label: "Geboortedatum",
     name: "testator_dob",
     type: "date",
-    required: true,
   },
-  { label: "Geboorteplaats", name: "testator_birth_place", required: true },
-  { label: "Nationaliteit", name: "testator_nationality", required: true },
-  { label: "Paspoortnummer", name: "testator_passport", required: true },
+  { label: "Geboorteplaats", name: "testator_birth_place" },
+  { label: "Nationaliteit", name: "testator_nationality" },
+  { label: "Paspoortnummer", name: "testator_passport" },
   {
     label: "Emirates ID-nummer (laat leeg als je geen Emirates ID hebt)",
     name: "testator_eid",
@@ -71,7 +77,6 @@ const personalFields: FieldDef[] = [
     name: "testator_address",
     type: "textarea",
     full: true,
-    required: true,
   },
   {
     label: "E-mailadres",
@@ -83,14 +88,12 @@ const personalFields: FieldDef[] = [
   {
     label: "Ben je getrouwd, ongehuwd, gescheiden of weduwe/weduwnaar?",
     name: "testator_marital_status",
-    required: true,
   },
   {
     label:
       "In welk land of welke landen word je voor de belasting als inwoner beschouwd?",
     name: "testator_tax_residency",
     full: true,
-    required: true,
   },
   {
     label:
@@ -98,22 +101,19 @@ const personalFields: FieldDef[] = [
     name: "residence_history_20_years",
     type: "textarea",
     full: true,
-    required: true,
   },
-  { label: "Wat is je beroep?", name: "profession", required: true },
+  { label: "Wat is je beroep?", name: "profession" },
   { label: "Naam van je werkgever of bedrijf", name: "employer_company" },
   {
     label:
       "Heb je geld of andere bezittingen ondergebracht in een vennootschap, holding, trust of foundation?",
     name: "asset_structures",
     type: "yesno",
-    required: true,
   },
   {
     label: "In welke landen heb je geld of andere bezittingen?",
     name: "asset_countries",
     full: true,
-    required: true,
   },
   {
     label:
@@ -121,19 +121,16 @@ const personalFields: FieldDef[] = [
     name: "asset_types",
     type: "textarea",
     full: true,
-    required: true,
   },
   {
     label: "Heb je cryptovaluta of andere digitale bezittingen?",
     name: "digital_assets",
     type: "yesno",
-    required: true,
   },
   {
     label: "Heb je al een testament in een ander land?",
     name: "existing_wills",
     type: "yesno",
-    required: true,
   },
   {
     label:
@@ -141,7 +138,6 @@ const personalFields: FieldDef[] = [
     name: "pep",
     type: "yesno",
     full: true,
-    required: true,
   },
   {
     label: "In welke landen heb je een bedrijf of doe je zaken?",
@@ -229,6 +225,7 @@ function Field({ def }: { def: FieldDef }) {
 }
 
 export default function QuestionnairePrototype() {
+  const formTopRef = useRef<HTMLDivElement>(null);
   const [values, setValues] = useState<Values>({});
   const [groups, setGroups] = useState<Record<Group, Person[]>>({
     executors: [emptyPerson()],
@@ -478,19 +475,29 @@ export default function QuestionnairePrototype() {
 
   function validate() {
     setError("");
-    if (
-      active[0] === "children" &&
-      (!values.has_adult_children || !values.has_minor_children)
-    ) {
-      setError("Beantwoord eerst beide vragen over je kinderen.");
-      return false;
+    if (active[0] === "person") {
+      const missingField = personalFields.find(
+        (field) => field.required && !values[field.name]?.trim(),
+      );
+
+      if (missingField) {
+        setError("Vul je naam, e-mailadres en telefoonnummer in.");
+        return false;
+      }
     }
     return true;
   }
   function next() {
     if (!validate()) return;
     setCurrent((c) => Math.min(c + 1, visibleSteps.length - 1));
-
+    requestAnimationFrame(() => {
+      formTopRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "start",
+      });
+    });
   }
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -498,15 +505,34 @@ export default function QuestionnairePrototype() {
     setSubmitting(true);
     setError("");
     try {
+      const submittedGroups = Object.fromEntries(
+        Object.entries(groups).map(([group, people]) => [
+          group,
+          people
+            .map(({ id: _id, ...person }) => person)
+            .filter((person) =>
+              Object.values(person).some((value) => value.trim()),
+            ),
+        ]),
+      );
       const response = await fetch("/api/questionnaire-prototype", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, ...groups }),
+        body: JSON.stringify({ ...values, ...submittedGroups }),
       });
-      if (!response.ok) throw new Error();
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as {
+          message?: string;
+        } | null;
+        throw new Error(result?.message);
+      }
       setSuccess(true);
-    } catch {
-      setError("Het formulier kon niet worden verzonden. Probeer het opnieuw.");
+    } catch (error) {
+      setError(
+        error instanceof Error && error.message
+          ? error.message
+          : "Het formulier kon niet worden verzonden. Probeer het opnieuw.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -514,21 +540,21 @@ export default function QuestionnairePrototype() {
 
   if (success)
     return (
-      <main className="questionnaire-page">
+      <div className="questionnaire-page">
         <div className="will-intake">
           <div className="wi-success" role="status">
             <h1>Gegevens voor je UAE-testament</h1>
             <p>Je gegevens zijn succesvol ontvangen.</p>
           </div>
         </div>
-      </main>
+      </div>
     );
   const progress = ((current + 1) / visibleSteps.length) * 100;
 
   return (
     <QuestionnaireContext.Provider value={{ values, setValue }}>
-      <main className="questionnaire-page">
-        <div id="will-intake" className="will-intake">
+      <div className="questionnaire-page">
+        <div id="will-intake" className="will-intake" ref={formTopRef}>
           <div className="wi-top">
             <h1>Gegevens voor je UAE-testament</h1>
             <p>
@@ -557,7 +583,6 @@ export default function QuestionnairePrototype() {
                           "Noem de vennootschap, holding, trust of foundation en beschrijf welke bezittingen daarin zijn ondergebracht",
                         name: "asset_structures_description",
                         type: "textarea",
-                        required: true,
                       }}
                     />
                   )}
@@ -571,7 +596,6 @@ export default function QuestionnairePrototype() {
                           "Heb je geregeld hoe je executeur na je overlijden toegang krijgt tot deze digitale bezittingen?",
                         name: "digital_assets_executor_access",
                         type: "yesno",
-                        required: true,
                       }}
                     />
                   )}
@@ -583,7 +607,6 @@ export default function QuestionnairePrototype() {
                       def={{
                         label: "In welk land of welke landen?",
                         name: "existing_wills_countries",
-                        required: true,
                       }}
                     />
                   )}
@@ -905,7 +928,7 @@ export default function QuestionnairePrototype() {
             </div>
           </form>
         </div>
-      </main>
+      </div>
     </QuestionnaireContext.Provider>
   );
 }

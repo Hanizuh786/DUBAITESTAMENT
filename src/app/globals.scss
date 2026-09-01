@@ -125,6 +125,22 @@ nav a {
   grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
   gap: 90px;
 }
+.sectionIntro {
+  position: sticky;
+  top: 106px;
+  align-self: start;
+}
+.sectionVisual {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  margin: 38px 0 0;
+  overflow: hidden;
+  background: var(--navy2);
+  box-shadow: 18px 18px 0 rgba(200, 167, 106, 0.22);
+}
+.sectionVisual img {
+  object-fit: cover;
+}
 .sectionNo {
   font-weight: 800;
   color: var(--gold);
@@ -245,6 +261,14 @@ footer {
     grid-template-columns: 1fr;
     gap: 28px;
   }
+  .sectionIntro {
+    position: static;
+  }
+  .sectionVisual {
+    aspect-ratio: 16 / 10;
+    margin: 28px 0 10px;
+    box-shadow: 10px 10px 0 rgba(200, 167, 106, 0.22);
+  }
   .section {
     padding: 74px 0;
   }
@@ -277,6 +301,7 @@ footer {
   max-width: 920px;
   margin: 0 auto;
   color: #202020;
+  scroll-margin-top: 96px;
 }
 .wi-top {
   margin-bottom: 24px;
