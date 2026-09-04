@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /questionnaire-prototype/
+
+Host: https://dubaitestament.nl/
+Sitemap: https://dubaitestament.nl/sitemap.xml
