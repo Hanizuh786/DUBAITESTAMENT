@@ -1,0 +1,6 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+
+Host: https://dubaitestament.nl/
+Sitemap: https://dubaitestament.nl/sitemap.xml

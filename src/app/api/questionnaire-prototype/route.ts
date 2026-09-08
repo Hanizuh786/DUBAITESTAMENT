@@ -17,6 +17,19 @@ function validateSubmission(data: QuestionnaireData) {
   const cutoff = new Date(Date.UTC(now.getUTCFullYear() - 18, now.getUTCMonth(), now.getUTCDate()));
   if (date > cutoff) return "Je moet minimaal 18 jaar oud zijn om een testament te registreren.";
   if (data.testator_eid && !/^784-(?:19|20)\d{2}-\d{7}-\d$/.test(String(data.testator_eid))) return "Vul het Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.";
+  if (data.will_type === "mirror") {
+    const secondName = String(data.second_testator_full_name ?? "").trim();
+    const secondEmail = String(data.second_testator_email ?? "");
+    const secondPhone = String(data.second_testator_phone ?? "").replace(/[ .()-]/g, "");
+    const secondDob = String(data.second_testator_dob ?? "");
+    if (!secondName || !secondEmail || !secondPhone || !secondDob) return "Voor een Mirror Will zijn de gegevens van beide testatoren verplicht.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(secondEmail)) return "Vul een geldig e-mailadres in voor de tweede testator.";
+    if (!/^\+[1-9]\d{7,14}$/.test(secondPhone)) return "Vul een geldig internationaal telefoonnummer in voor de tweede testator.";
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(secondDob)) return "Vul de geboortedatum van de tweede testator in als yyyy-mm-dd.";
+    const secondDate = new Date(secondDob + "T00:00:00Z");
+    if (Number.isNaN(secondDate.getTime()) || secondDate.toISOString().slice(0, 10) !== secondDob) return "Vul een bestaande geboortedatum in voor de tweede testator.";
+    if (data.second_testator_eid && !/^784-(?:19|20)\d{2}-\d{7}-\d$/.test(String(data.second_testator_eid))) return "Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X.";
+  }
   return null;
 }
 
@@ -222,6 +235,27 @@ const reportSections: Array<{
       ["financial_guardian_address", "Adres financieel voogd"],
       ["financial_guardian_compensation", "Vergoeding financieel voogd"],
       ["financial_guardian_compensation_frequency", "Frequentie vergoeding"],
+    ],
+  },
+  {
+    title: "Tweede testator",
+    fields: [
+      ["second_testator_full_name", "Naam tweede testator"],
+      ["second_testator_dob", "Geboortedatum tweede testator"],
+      ["second_testator_birth_place", "Geboorteplaats tweede testator"],
+      ["second_testator_nationality", "Nationaliteit tweede testator"],
+      ["second_testator_passport", "Paspoort tweede testator"],
+      ["second_testator_eid", "Emirates ID tweede testator"],
+      ["second_testator_email", "E-mailadres tweede testator"],
+      ["second_testator_phone", "Telefoonnummer tweede testator"],
+      ["second_testator_address", "Adres tweede testator"],
+      ["second_testator_tax_residency", "Fiscale woonlanden tweede testator"],
+      ["second_testator_asset_countries", "Landen vermogen tweede testator"],
+      ["second_testator_asset_types", "Vermogen tweede testator"],
+      ["second_testator_existing_wills", "Bestaande testamenten tweede testator"],
+      ["second_testator_existing_wills_countries", "Landen bestaande testamenten tweede testator"],
+      ["second_testator_joint_assets_ownership", "Eigendomsaandelen gezamenlijke bezittingen"],
+      ["second_testator_funeral_type", "Uitvaartwens tweede testator"],
     ],
   },
   {
