@@ -19,7 +19,7 @@ Daarom onderzoeken we eerst hoe je vermogen, bestaande testamenten en fiscale po
   },
   {
     title: "Wat wij onderzoeken",
-    body: `Tijdens het gesprek bespreken we wat je voor je partner, kinderen en vermogen wilt regelen. Daarna onderzoeken we wat je nationaliteit, je relatie, je eerdere woonplaatsen, de woonplaats van je erfgenamen, je vermogen in andere landen en eventuele je bestaande testamenten voor je nalatenschap betekenen.
+    body: `Tijdens het gesprek bespreken we wat je voor je partner, kinderen en vermogen wilt regelen. Daarna onderzoeken we wat je nationaliteit, je relatie, je eerdere woonplaatsen, de woonplaats van je erfgenamen, je vermogen in andere landen en eventuele bestaande testamenten voor je nalatenschap betekenen.
 
 We betrekken daarbij:
 
@@ -56,7 +56,7 @@ cliënten met vermogen of testamenten in meerdere landen.
 
 Mirror Wills zijn twee afzonderlijke testamenten, want er bestaat niet zoiets als een familietestament.
 
-Een Mirror Will houdt in dat iedere partner een eigen testament heeft.De wensen kunnen hetzelfde zijn, terwijl de bepalingen verschillen door nationaliteit, eerdere woonplaats, eigen vermogen, kinderen uit een eerdere relatie of bestaande testamenten.
+Een Mirror Will houdt in dat iedere partner een eigen testament heeft. De wensen kunnen hetzelfde zijn, terwijl de bepalingen verschillen door nationaliteit, eerdere woonplaats, eigen vermogen, kinderen uit een eerdere relatie of bestaande testamenten.
 
 We beoordelen daarom de positie van iedere partner afzonderlijk. Daarna stemmen we beide testamenten op elkaar af.
 
@@ -89,7 +89,7 @@ AED 8.000 inclusief VAT voor onze werkzaamheden
 AED 1.900 voor de registratie van twee testamenten
 Totaal: AED 9.900
 
-Bij het vergelijken van averschillende anbieders is het belangrijk om te controleren of een prijs geldt voor één of twee testamenten en of VAT, fiscaal onderzoek, Arabische vertalingen, wijzigingen en registratiebegeleiding zijn inbegrepen.
+Bij het vergelijken van verschillende aanbieders is het belangrijk om te controleren of een prijs geldt voor één of twee testamenten en of VAT, fiscaal onderzoek, Arabische vertalingen, wijzigingen en registratiebegeleiding zijn inbegrepen.
 
 Er zijn helaas veel oplichters actief in de UAE, en daarom is het van belang dat je controleert of degene die jouw testament opstelt in dit register is opgenomen: DIFC-Courts
 

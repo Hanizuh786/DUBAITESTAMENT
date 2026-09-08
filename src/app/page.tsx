@@ -39,7 +39,23 @@ const sectionImages: {
 ];
 
 function Paragraphs({ text }: { text: string }) {
-  return <>{text.split(/\n{2,}/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}</>;
+  const linkify = (value: string) => {
+    const parts = value.split(/(DIFC-Courts|https:\/\/www\.rechtspraak\.nl\/[^\s]+|https:\/\/bodymuseum\.ku\.ac\.ae\/|https:\/\/www\.difccourts\.ae\/ws|https:\/\/www\.notaris\.nl\/page\/het-opvolgersarchief\.?)/g);
+    return parts.map((part, index) => {
+      const links: Record<string, [string, string]> = {
+        "DIFC-Courts": ["Register of Wills Draftsmen", "https://eregistry.difccourts.ae/will-draftsmen"],
+      };
+      if (links[part]) return <a key={index} href={links[part][1]}>{links[part][0]}</a>;
+      if (part.startsWith("http")) {
+        const raw = part.replace(/[.,]$/, "");
+        const href = raw.includes("rechtspraak.nl") ? "https://www.rechtspraak.nl/onderwerpen/voogdij/aanwijzen-voogd-formulier" : raw.includes("bodymuseum") ? "https://ku.ac.ae/bodymuseum/" : raw.includes("difccourts.ae/ws") ? "https://eregistry.difccourts.ae/will-draftsmen" : raw.includes("notaris.nl") ? "https://www.notaris.nl/page/het-opvolgersarchief" : raw;
+        const label = href.includes("rechtspraak") ? "Voogd aanwijzen" : href.includes("bodymuseum") ? "Body Museum van Khalifa University" : href.includes("notaris") ? "Opvolgersarchief" : "Register of Wills Draftsmen";
+        return <a key={index} href={href}>{label}</a>;
+      }
+      return part;
+    });
+  };
+  return <>{text.split(/\n{2,}/).map((paragraph, index) => <p key={index}>{linkify(paragraph)}</p>)}</>;
 }
 
 export default function Home() {
@@ -201,6 +217,12 @@ export default function Home() {
             </div>
           </section>
         ))}
+        <section className="section tint" id="over-ons">
+          <div className="wrap grid">
+            <div className="sectionIntro"><p className="sectionNo">06</p><h2>Over ons</h2><figure className="sectionVisual"><Image src="/images/foto-hilda.jpg" alt="mr. Hilda van der Tuin" fill sizes="(max-width: 760px) calc(100vw - 28px), 42vw" /></figure></div>
+            <div className="prose"><p>mr. Hilda van der Tuin behandelt jouw dossier zelf. Zij voert het gesprek, doet het onderzoek, stelt de testamenten op en verwerkt je wijzigingen. Je dossier wordt niet na het eerste gesprek overgedragen aan een junior medewerker of een anoniem typingteam.</p><p>Hilda is advocaat, notaris en mediator in de Verenigde Arabische Emiraten. Zij heeft een Master of Laws in notarieel recht en is Registered Wills Draftsman voor DIFC. Zij werkt al vijftien jaar in de Verenigde Arabische Emiraten.</p><p>Bij de Koninklijke Notariële Beroepsorganisatie in Den Haag was Hilda manager van de afdelingen Praktijkzaken en Juridische Zaken. Zij gaf leiding aan twintig juristen en maakte deel uit van het managementteam.</p></div>
+          </div>
+        </section>
         <Faq items={faqs} />
         <section id="contact" className="contact"><div className="wrap"><p className="eyebrow">DUBAITESTAMENT.NL</p><h2>Contact</h2><p>Wij zijn een responsief en flexibel advocatenkantoor. Waar mogelijk bieden wij onze diensten aan tegen een vaste prijs. Je hebt rechtstreeks contact met de experts die je zaak behandelen; wij besteden ons werk niet uit.</p><p>Voor de meeste zaken maken wij een eigen omgeving in ons online portaal. Daar kun je de voortgang volgen, correspondentie en documenten lezen en precies zien wat wij namens jou doen.</p><p>Wij behouden ons het recht voor om opdrachten van potentiële cliënten zonder opgaaf van reden te weigeren.</p><p><strong>Ons kantoor in Dubai:</strong><br />Dubai Hills Business Park<br />Building 4, Seventh Floor<br />Dubai, United Arab Emirates</p><p>Wij zijn niet altijd op kantoor aanwezig. Voor een persoonlijk gesprek is daarom een afspraak nodig. In de meeste gevallen is een online gesprek een uitstekend alternatief.</p><p><strong>Direct e-mailen:</strong><br /><a href="mailto:hilda@dutchlawyerindeuae.nl">hilda@dutchlawyerindeuae.nl</a><br /><a href="mailto:paul@dutchlawyerindeuae.nl">paul@dutchlawyerindeuae.nl</a></p><p>Voor meer digitale privacy kun je contact opnemen met Paul via Signal: paulharts.33, of Telegram: @Paul_Holland_Legal_Services.</p><a className="button" href="https://dutchlawyerindeuae.youcanbook.me">Boek een gesprek</a></div></section>
       </main>

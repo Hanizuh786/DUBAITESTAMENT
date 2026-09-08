@@ -57,7 +57,6 @@ export default function Faq({ items }: FaqProps) {
           </span>
         </div>
         <div className="faqFilters">{categoryNames.map((category) => <button type="button" className={categories.includes(category) ? "active" : ""} key={category} onClick={() => setCategories((c) => c.includes(category) ? c.filter((x) => x !== category) : [...c, category])}>{category}</button>)} <button type="button" onClick={() => { setCategories([]); setQuery(""); }}>Wis filters</button></div>
-        <div className="faqActions"><button type="button" onClick={() => toggleAll(true)}>Alles uitklappen</button><button type="button" onClick={() => toggleAll(false)}>Alles inklappen</button></div>
 
         <div className="accordions">
           {filteredItems.map((item) => (

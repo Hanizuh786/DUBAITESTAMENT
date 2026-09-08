@@ -217,6 +217,7 @@ function Field({ def }: { def: FieldDef }) {
   if (!context) return null;
   const { values, setValue } = context;
   const id = `wi-${def.name}`;
+  const placeholder = def.placeholder ?? (def.type === "textarea" ? "Typ hier je antwoord..." : def.type === "email" ? "naam@voorbeeld.nl" : def.inputMode === "tel" ? "+31612345678" : def.name.includes("eid") ? "784-YYYY-XXXXXXX-X" : def.name.includes("name") ? "Bijvoorbeeld: Jan de Vries" : def.name.includes("nationality") ? "Bijvoorbeeld: Nederlands" : def.name.includes("passport") ? "Bijvoorbeeld: NP1234567" : "Typ hier je antwoord...");
   return (
     <div className={`wi-field${def.full ? " full" : ""}`}>
       <label htmlFor={id}>{def.label}</label>
@@ -227,6 +228,7 @@ function Field({ def }: { def: FieldDef }) {
           value={values[def.name] ?? ""}
           onChange={(e) => setValue(def.name, e.target.value)}
           required={def.required}
+          placeholder={placeholder}
         />
       ) : def.type === "yesno" || def.type === "select" || def.name === "testator_marital_status" ? (
         <select
@@ -235,7 +237,7 @@ function Field({ def }: { def: FieldDef }) {
           onChange={(e) => setValue(def.name, e.target.value)}
           required={def.required}
         >
-          <option value=""></option>
+          <option value="">Kies een antwoord</option>
           {def.type === "yesno" ? <><option value="yes">Ja</option><option value="no">Nee</option></> : def.name.includes("funeral") ? <><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></> : <><option value="married">Getrouwd</option><option value="unmarried">Ongehuwd</option><option value="divorced">Gescheiden</option><option value="widowed">Weduwe/weduwnaar</option></>}
         </select>
       ) : (
@@ -243,7 +245,7 @@ function Field({ def }: { def: FieldDef }) {
           id={id}
           type={def.type === "email" ? "email" : "text"}
           inputMode={def.inputMode}
-          placeholder={def.placeholder}
+          placeholder={placeholder}
           pattern={def.type === "email" ? "[^\\s@]+@[^\\s@]+\\.[^\\s@]+" : undefined}
           value={values[def.name] ?? ""}
           onChange={(e) => setValue(def.name, e.target.value)}
@@ -383,7 +385,7 @@ export default function QuestionnairePrototype() {
                   {f.name === "dob" && <small className="wi-hint">Format: yyyy-mm-dd, bijvoorbeeld 1980-06-30</small>}
                   <input
                     type="text"
-                    placeholder={f.name === "eid" ? "784-____-_______-_" : (f as FieldDef).placeholder}
+                    placeholder={f.name === "eid" ? "784-YYYY-XXXXXXX-X" : f.name === "dob" ? "yyyy-mm-dd" : f.name === "full_name" ? "Bijvoorbeeld: Jan de Vries" : f.name === "passport" ? "Bijvoorbeeld: NP1234567" : "Typ hier je antwoord..."}
                     inputMode={f.name === "eid" ? "numeric" : (f as FieldDef).inputMode}
                     value={person[f.name] ?? ""}
                     onChange={(e) =>
@@ -487,7 +489,7 @@ export default function QuestionnairePrototype() {
                           updatePerson(kind, person.id, name, e.target.value)
                         }
                       >
-                        <option value=""></option>
+                        <option value="">Kies een antwoord</option>
                         <option value="yes">Ja</option>
                         <option value="no">Nee</option>
                       </select>
@@ -523,7 +525,7 @@ export default function QuestionnairePrototype() {
                       )
                     }
                   >
-                    <option value=""></option>
+                    <option value="">Kies een antwoord</option>
                     <option value="current">Huidige relatie</option>
                     <option value="previous">Eerdere relatie</option>
                   </select>
@@ -975,7 +977,7 @@ export default function QuestionnairePrototype() {
                       full: true,
                     },
                   ].map((def) => (
-                    def.name === "funeral_type" ? <div className="wi-field" key={def.name}><label htmlFor="wi-funeral_type">{def.label}</label><select id="wi-funeral_type" value={values.funeral_type ?? ""} onChange={(e) => setValue("funeral_type", e.target.value)}><option value=""></option><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></select></div> : <Field key={def.name} def={def as FieldDef} />
+                    def.name === "funeral_type" ? <div className="wi-field" key={def.name}><label htmlFor="wi-funeral_type">{def.label}</label><select id="wi-funeral_type" value={values.funeral_type ?? ""} onChange={(e) => setValue("funeral_type", e.target.value)}><option value="">Kies een antwoord</option><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></select></div> : <Field key={def.name} def={def as FieldDef} />
                   ))}
                 </div>
               )}
