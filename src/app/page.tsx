@@ -217,7 +217,7 @@ export default function Home() {
           <p>Dubai office: Dubai Hills Business Park, Building 4, Seventh Floor, Dubai, United Arab Emirates<br />
             <a href="mailto:hilda@dutchlawyerindeuae.nl">hilda@dutchlawyerindeuae.nl</a> · <a href="mailto:paul@dutchlawyerindeuae.nl">paul@dutchlawyerindeuae.nl</a>
           </p>
-          <p><a href="https://www.holland-legal-services.ae/our-privacy-policy.html">Privacyverklaring</a></p>
+          <p><a href="https://www.dutchlawyerindeuae.nl/privacy-policy.html">Privacyverklaring</a></p>
         </div>
       </footer>
     </>

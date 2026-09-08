@@ -36,6 +36,7 @@ type FieldDef = {
   required?: boolean;
   placeholder?: string;
   inputMode?: "text" | "tel" | "email" | "numeric";
+  hint?: string;
 };
 
 const stepDefinitions = [
@@ -68,6 +69,7 @@ const personalFields: FieldDef[] = [
     name: "testator_dob",
     placeholder: "yyyy-mm-dd",
     inputMode: "numeric",
+    hint: "Format: yyyy-mm-dd, bijvoorbeeld 1980-06-30",
   },
   { label: "Geboorteplaats", name: "testator_birth_place" },
   { label: "Nationaliteit", name: "testator_nationality" },
@@ -87,8 +89,9 @@ const personalFields: FieldDef[] = [
     name: "testator_email",
     type: "email",
     required: true,
+    hint: "Bijvoorbeeld: naam@voorbeeld.nl",
   },
-  { label: "Telefoonnummer (inclusief landcode)", name: "testator_phone", required: true, placeholder: "+971 ...", inputMode: "tel" },
+  { label: "Telefoonnummer (inclusief landcode)", name: "testator_phone", required: true, placeholder: "+971 ...", inputMode: "tel", hint: "Begin met + en de landcode, bijvoorbeeld +31612345678" },
   {
     label: "Ben je getrouwd, ongehuwd, gescheiden of weduwe/weduwnaar?",
     name: "testator_marital_status",
@@ -217,6 +220,7 @@ function Field({ def }: { def: FieldDef }) {
   return (
     <div className={`wi-field${def.full ? " full" : ""}`}>
       <label htmlFor={id}>{def.label}</label>
+      {def.hint && <small className="wi-hint">{def.hint}</small>}
       {def.type === "textarea" ? (
         <textarea
           id={id}
@@ -375,6 +379,8 @@ export default function QuestionnairePrototype() {
               ].map((f) => (
                 <div className="wi-field" key={f.name}>
                   <label>{f.label}</label>
+                  {f.name === "eid" && <small className="wi-hint">Format: 784-YYYY-XXXXXXX-X</small>}
+                  {f.name === "dob" && <small className="wi-hint">Format: yyyy-mm-dd, bijvoorbeeld 1980-06-30</small>}
                   <input
                     type="text"
                     placeholder={f.name === "eid" ? "784-____-_______-_" : (f as FieldDef).placeholder}
