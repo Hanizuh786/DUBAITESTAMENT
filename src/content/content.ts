@@ -64,9 +64,7 @@ Elke partner ontvangt een concept van zijn eigen testament. Je kunt je eigen tek
   },
   {
     title: "Wat je krijgt en wat het kost",
-    body: `De vaste fee voor het cross-border estate planning proces van jou en je partner bedraagt bij de Abu Dhabi Courts (ADJD): AED 8.000 inclusief VAT.
-
-Daarin zijn opgenomen:
+    body: `In de prijs voor een Mirror Will zijn opgenomen:
 
 een persoonlijk videogesprek van een uur met Hilda;
 juridisch en fiscaal onderzoek voor beide partners;
@@ -78,16 +76,6 @@ verwerking van wijzigingen;
 twee Arabische vertalingen, opgesteld door een erkende rechtbankvertaler;
 begeleiding bij de registratie van je testament;
 en als eindproduct twee gelegaliseerde testamenten.
-
-De vertaalkosten zijn in onze fee opgenomen.
-
-De registratiekosten bedragen AED 950 per testament. Voor twee testamenten betaal je daarom AED 1.900 aan registratiekosten.
-
-De totale kosten voor twee ADJD testamenten bedragen:
-
-AED 8.000 inclusief VAT voor onze werkzaamheden
-AED 1.900 voor de registratie van twee testamenten
-Totaal: AED 9.900
 
 Bij het vergelijken van verschillende aanbieders is het belangrijk om te controleren of een prijs geldt voor één of twee testamenten en of VAT, fiscaal onderzoek, Arabische vertalingen, wijzigingen en registratiebegeleiding zijn inbegrepen.
 
@@ -101,7 +89,7 @@ Staat de betreffende persoon er niet in, dan heb je met een fraudeur te maken di
 
 Daarna volgt het juridische en fiscale onderzoek. Op basis daarvan stelt Hilda het estate plan en de testamenten op.
 
-Elke partner ontvangt zijn eigen concept en kan wijzigingen doorgeven. Na goedkeuring regelen wij de twee Arabische vertalingen en begeleiden wij de digitale registratie via je testament.
+Je ontvangt een concept van je testament en kunt wijzigingen doorgeven. Bij Mirror Wills ontvangt iedere partner een eigen concept. Na goedkeuring regelen wij de Arabische vertaling en begeleiden wij de digitale registratie van je testament.
 
 Op dit moment duurt het volledige proces ongeveer zes weken, maar dit is wel afhankelijk van je eigen reactiesnelheid.
 
