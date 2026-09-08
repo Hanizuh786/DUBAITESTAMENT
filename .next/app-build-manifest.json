@@ -1,37 +1,20 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-20cb56119301f3b2.js",
-      "static/chunks/fd9d1056-6952ca70748862da.js",
-      "static/chunks/117-701084f7e5e3d7b7.js",
-      "static/chunks/main-app-41fd549e967adca7.js",
-      "static/chunks/app/_not-found/page-a0ab920d4ee35bf6.js"
+    "/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/page.js"
     ],
     "/layout": [
-      "static/chunks/webpack-20cb56119301f3b2.js",
-      "static/chunks/fd9d1056-6952ca70748862da.js",
-      "static/chunks/117-701084f7e5e3d7b7.js",
-      "static/chunks/main-app-41fd549e967adca7.js",
-      "static/css/0fd027e3c01fe61b.css",
-      "static/chunks/app/layout-9001770a1bd480fb.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
-    "/page": [
-      "static/chunks/webpack-20cb56119301f3b2.js",
-      "static/chunks/fd9d1056-6952ca70748862da.js",
-      "static/chunks/117-701084f7e5e3d7b7.js",
-      "static/chunks/main-app-41fd549e967adca7.js",
-      "static/chunks/b536a0f1-24c93c0e56fd3a6f.js",
-      "static/chunks/135-72c35a7a7fbfd763.js",
-      "static/chunks/901-112b4df9ec0dca30.js",
-      "static/chunks/app/page-a8cfc450d00dfbce.js"
-    ],
-    "/questionnaire-prototype/page": [
-      "static/chunks/webpack-20cb56119301f3b2.js",
-      "static/chunks/fd9d1056-6952ca70748862da.js",
-      "static/chunks/117-701084f7e5e3d7b7.js",
-      "static/chunks/main-app-41fd549e967adca7.js",
-      "static/chunks/901-112b4df9ec0dca30.js",
-      "static/chunks/app/questionnaire-prototype/page-3712a2430459b466.js"
+    "/testamentvragenlijst/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/testamentvragenlijst/page.js"
     ]
   }
 }

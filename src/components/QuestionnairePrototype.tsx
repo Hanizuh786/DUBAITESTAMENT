@@ -31,9 +31,11 @@ type PersonKind =
 type FieldDef = {
   label: string;
   name: string;
-  type?: "text" | "date" | "email" | "textarea" | "yesno";
+  type?: "text" | "date" | "email" | "textarea" | "yesno" | "select";
   full?: boolean;
   required?: boolean;
+  placeholder?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
 };
 
 const stepDefinitions = [
@@ -55,6 +57,7 @@ const stepDefinitions = [
 ] as const;
 
 const personalFields: FieldDef[] = [
+  { label: "Wil je een Single Will of een Mirror Will laten opstellen?", name: "will_type", required: true },
   {
     label: "Volledige naam (zoals in je paspoort)",
     name: "testator_full_name",
@@ -63,7 +66,8 @@ const personalFields: FieldDef[] = [
   {
     label: "Geboortedatum",
     name: "testator_dob",
-    type: "date",
+    placeholder: "yyyy-mm-dd",
+    inputMode: "numeric",
   },
   { label: "Geboorteplaats", name: "testator_birth_place" },
   { label: "Nationaliteit", name: "testator_nationality" },
@@ -84,11 +88,13 @@ const personalFields: FieldDef[] = [
     type: "email",
     required: true,
   },
-  { label: "Telefoonnummer", name: "testator_phone", required: true },
+  { label: "Telefoonnummer (inclusief landcode)", name: "testator_phone", required: true, placeholder: "+971 ...", inputMode: "tel" },
   {
     label: "Ben je getrouwd, ongehuwd, gescheiden of weduwe/weduwnaar?",
     name: "testator_marital_status",
   },
+  { label: "Heb je een partner?", name: "has_partner", type: "yesno" },
+  { label: "Heb je kinderen?", name: "has_children", type: "yesno" },
   {
     label:
       "In welk land of welke landen word je voor de belasting als inwoner beschouwd?",
@@ -147,6 +153,24 @@ const personalFields: FieldDef[] = [
   },
 ];
 
+const secondTestatorFields: FieldDef[] = [
+  { label: "Naam tweede testator (zoals in paspoort)", name: "second_testator_full_name", required: true },
+  { label: "Geboortedatum tweede testator (yyyy-mm-dd)", name: "second_testator_dob", placeholder: "yyyy-mm-dd", inputMode: "numeric", required: true },
+  { label: "Geboorteplaats", name: "second_testator_birth_place" },
+  { label: "Nationaliteit", name: "second_testator_nationality" },
+  { label: "Paspoortnummer", name: "second_testator_passport" },
+  { label: "Emirates ID-nummer", name: "second_testator_eid", placeholder: "784-____-_______-_" },
+  { label: "E-mailadres tweede testator", name: "second_testator_email", type: "email", required: true },
+  { label: "Telefoonnummer tweede testator (inclusief landcode)", name: "second_testator_phone", required: true, placeholder: "+971 ...", inputMode: "tel" },
+  { label: "Adres", name: "second_testator_address", type: "textarea", full: true },
+  { label: "Fiscale woonlanden", name: "second_testator_tax_residency", full: true },
+  { label: "Landen waar vermogen aanwezig is", name: "second_testator_asset_countries", full: true },
+  { label: "Soorten vermogen", name: "second_testator_asset_types", type: "textarea", full: true },
+  { label: "Heb je al een testament in een ander land?", name: "second_testator_existing_wills", type: "yesno" },
+  { label: "Gezamenlijke bezittingen en eigendomspercentage", name: "second_testator_joint_assets_ownership", type: "textarea", full: true },
+  { label: "Uitvaartwens", name: "second_testator_funeral_type", type: "select" },
+];
+
 const groupMap: Record<PersonKind, Group> = {
   executor: "executors",
   beneficiary: "beneficiaries",
@@ -200,7 +224,7 @@ function Field({ def }: { def: FieldDef }) {
           onChange={(e) => setValue(def.name, e.target.value)}
           required={def.required}
         />
-      ) : def.type === "yesno" ? (
+      ) : def.type === "yesno" || def.type === "select" || def.name === "testator_marital_status" ? (
         <select
           id={id}
           value={values[def.name] ?? ""}
@@ -208,13 +232,15 @@ function Field({ def }: { def: FieldDef }) {
           required={def.required}
         >
           <option value=""></option>
-          <option value="yes">Ja</option>
-          <option value="no">Nee</option>
+          {def.type === "yesno" ? <><option value="yes">Ja</option><option value="no">Nee</option></> : def.name.includes("funeral") ? <><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></> : <><option value="married">Getrouwd</option><option value="unmarried">Ongehuwd</option><option value="divorced">Gescheiden</option><option value="widowed">Weduwe/weduwnaar</option></>}
         </select>
       ) : (
         <input
           id={id}
-          type={def.type ?? "text"}
+          type={def.type === "email" ? "email" : "text"}
+          inputMode={def.inputMode}
+          placeholder={def.placeholder}
+          pattern={def.type === "email" ? "[^\\s@]+@[^\\s@]+\\.[^\\s@]+" : undefined}
           value={values[def.name] ?? ""}
           onChange={(e) => setValue(def.name, e.target.value)}
           required={def.required}
@@ -255,8 +281,15 @@ export default function QuestionnairePrototype() {
     [values.has_minor_children],
   );
   const active = visibleSteps[current] ?? visibleSteps[0];
-  const setValue = (name: string, value: string) =>
+  const setValue = (name: string, value: string) => {
+    if (name.endsWith("eid")) value = formatEid(value);
+    if (name === "testator_phone") {
+      value = value.replace(/[^+\d]/g, "");
+      value = value.startsWith("+") ? "+" + value.slice(1).replace(/\D/g, "") : value.replace(/\D/g, "");
+      value = value.slice(0, 16);
+    }
     setValues((v) => ({ ...v, [name]: value }));
+  };
   const add = (kind: PersonKind) => {
     const group = groupMap[kind];
     setGroups((g) => ({ ...g, [group]: [...g[group], emptyPerson()] }));
@@ -275,6 +308,7 @@ export default function QuestionnairePrototype() {
     field: string,
     value: string,
   ) => {
+    if (field === "eid") value = formatEid(value);
     const group = groupMap[kind];
     setGroups((g) => ({
       ...g,
@@ -283,6 +317,23 @@ export default function QuestionnairePrototype() {
       ),
     }));
   };
+
+  function formatEid(value: string) {
+    const digits = value.replace(/\\D/g, "").replace(/^784/, "").slice(0, 15);
+    const all = `784${digits}`;
+    return [all.slice(0, 3), all.slice(3, 7), all.slice(7, 14), all.slice(14)].filter(Boolean).join("-");
+  }
+  function validDate(value: string) {
+    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  }
+  function adultDate(value: string) {
+    const now = new Date();
+    const cutoff = new Date(Date.UTC(now.getUTCFullYear() - 18, now.getUTCMonth(), now.getUTCDate()));
+    return new Date(`${value}T00:00:00Z`) <= cutoff;
+  }
+  function validEid(value: string) { return !value || /^784-(?:19|20)\d{2}-\d{7}-\d$/.test(value); }
 
   function PersonFields({ kind }: { kind: PersonKind }) {
     const group = groupMap[kind];
@@ -310,7 +361,7 @@ export default function QuestionnairePrototype() {
                   label: "Volledige naam (zoals in paspoort)",
                   name: "full_name",
                 },
-                { label: "Geboortedatum", name: "dob", type: "date" },
+                { label: "Geboortedatum (yyyy-mm-dd)", name: "dob", placeholder: "yyyy-mm-dd", inputMode: "numeric" },
                 { label: "Geboorteplaats", name: "birth_place" },
                 { label: "Nationaliteit", name: "nationality" },
                 { label: "Paspoortnummer", name: "passport" },
@@ -325,7 +376,9 @@ export default function QuestionnairePrototype() {
                 <div className="wi-field" key={f.name}>
                   <label>{f.label}</label>
                   <input
-                    type={f.type ?? "text"}
+                    type="text"
+                    placeholder={f.name === "eid" ? "784-____-_______-_" : (f as FieldDef).placeholder}
+                    inputMode={f.name === "eid" ? "numeric" : (f as FieldDef).inputMode}
                     value={person[f.name] ?? ""}
                     onChange={(e) =>
                       updatePerson(kind, person.id, f.name, e.target.value)
@@ -448,12 +501,12 @@ export default function QuestionnairePrototype() {
                 </>
               )}
               {(kind === "adult_child" || kind === "minor_child") && (
-                <div className="wi-field">
+                <div className="wi-field full">
                   <label>
                     Is dit kind uit je huidige relatie of uit een eerdere
                     relatie?
                   </label>
-                  <input
+                  <select
                     value={person.relationship ?? ""}
                     onChange={(e) =>
                       updatePerson(
@@ -463,7 +516,13 @@ export default function QuestionnairePrototype() {
                         e.target.value,
                       )
                     }
-                  />
+                  >
+                    <option value=""></option>
+                    <option value="current">Huidige relatie</option>
+                    <option value="previous">Eerdere relatie</option>
+                  </select>
+                  <label>Wie zijn de ouders van dit kind?</label>
+                  <input value={person.parents ?? ""} onChange={(e) => updatePerson(kind, person.id, "parents", e.target.value)} placeholder="Bijvoorbeeld: beide testatoren, ik alleen, of naam andere ouder" />
                 </div>
               )}
             </div>
@@ -475,14 +534,39 @@ export default function QuestionnairePrototype() {
 
   function validate() {
     setError("");
+    for (const people of Object.values(groups)) {
+      for (const person of people) {
+        if (person.dob && !validDate(person.dob)) {
+          setError("Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.");
+          return false;
+        }
+        if (person.eid && !validEid(person.eid)) {
+          setError("Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.");
+          return false;
+        }
+      }
+    }
     if (active[0] === "person") {
       const missingField = personalFields.find(
         (field) => field.required && !values[field.name]?.trim(),
       );
 
       if (missingField) {
-        setError("Vul je naam, e-mailadres en telefoonnummer in.");
+        setError(`Vul het verplichte veld in: ${missingField.label}.`);
         return false;
+      }
+      if (!validDate(values.testator_dob)) { setError("Vul je geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30."); return false; }
+      if (!adultDate(values.testator_dob)) { setError("Je moet minimaal 18 jaar oud zijn om een testament te registreren."); return false; }
+      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(values.testator_email)) { setError("Vul een geldig e-mailadres in."); return false; }
+      if (!/^\\+[1-9]\\d{7,14}$/.test(values.testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in, beginnend met +."); return false; }
+      if (!validEid(values.testator_eid)) { setError("Vul het Emirates ID in als 784-YYYY-XXXXXXX-X."); return false; }
+      if (values.will_type === "mirror") {
+        const requiredSecond = secondTestatorFields.find((field) => field.required && !values[field.name]?.trim());
+        if (requiredSecond) { setError("Vul het verplichte veld in voor de tweede testator: " + requiredSecond.label + "."); return false; }
+        if (!validDate(values.second_testator_dob)) { setError("Vul de geboortedatum van de tweede testator in als yyyy-mm-dd."); return false; }
+        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(values.second_testator_email)) { setError("Vul een geldig e-mailadres in voor de tweede testator."); return false; }
+        if (!/^\\+[1-9]\\d{7,14}$/.test(values.second_testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in voor de tweede testator."); return false; }
+        if (!validEid(values.second_testator_eid)) { setError("Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X."); return false; }
       }
     }
     return true;
@@ -515,7 +599,7 @@ export default function QuestionnairePrototype() {
             ),
         ]),
       );
-      const response = await fetch("/api/questionnaire-prototype", {
+      const response = await fetch("/api/testament-questionnaire", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, ...submittedGroups }),
@@ -543,8 +627,8 @@ export default function QuestionnairePrototype() {
       <div className="questionnaire-page">
         <div className="will-intake">
           <div className="wi-success" role="status">
-            <h1>Gegevens voor je UAE-testament</h1>
-            <p>Je gegevens zijn succesvol ontvangen.</p>
+          <h1>Gegevens voor je UAE-testament</h1>
+            <p>Bedankt. We hebben je testamentvragenlijst ontvangen. Je ontvangt per e-mail een bevestiging.</p>
           </div>
         </div>
       </div>
@@ -556,6 +640,13 @@ export default function QuestionnairePrototype() {
       <div className="questionnaire-page">
         <div id="will-intake" className="will-intake" ref={formTopRef}>
           <div className="wi-top">
+            <div className="wi-brand-masthead" aria-label="Dutch Lawyer in de UAE">
+              <img src="/images/dutch-lawyer-tulips.jpg" alt="Dutch Lawyer in de UAE" />
+              <div className="wi-brand-lockup">
+                <strong>Dubaitestament.nl</strong>
+                <span>by&nbsp; Dutch Lawyer in de UAE</span>
+              </div>
+            </div>
             <h1>Gegevens voor je UAE-testament</h1>
             <p>
               Beantwoord de vragen hieronder. We gebruiken je antwoorden voor
@@ -573,9 +664,16 @@ export default function QuestionnairePrototype() {
               <h2>{active[1]}</h2>
               {active[0] === "person" && (
                 <div className="wi-grid">
-                  {personalFields.slice(0, 15).map((def) => (
+                  {personalFields.slice(0, 18).map((def) => (
                     <Field key={def.name} def={def} />
                   ))}
+                  {values.will_type === "mirror" && (
+                    <>
+                      <div className="wi-field full"><h3 className="wi-subheading">Gegevens tweede testator</h3><p className="wi-note">Vul de gegevens van de tweede testator afzonderlijk in. Antwoorden worden niet automatisch overgenomen.</p></div>
+                      {secondTestatorFields.map((def) => <Field key={def.name} def={def} />)}
+                      {values.second_testator_existing_wills === "yes" && <Field def={{ label: "In welk land of welke landen?", name: "second_testator_existing_wills_countries" }} />}
+                    </>
+                  )}
                   {values.asset_structures === "yes" && (
                     <Field
                       def={{
@@ -586,7 +684,7 @@ export default function QuestionnairePrototype() {
                       }}
                     />
                   )}
-                  {personalFields.slice(15, 18).map((def) => (
+                  {personalFields.slice(18, 21).map((def) => (
                     <Field key={def.name} def={def} />
                   ))}
                   {values.digital_assets === "yes" && (
@@ -753,7 +851,8 @@ export default function QuestionnairePrototype() {
                       {
                         label: "Geboortedatum",
                         name: "financial_guardian_dob",
-                        type: "date",
+                        placeholder: "yyyy-mm-dd",
+                        inputMode: "numeric",
                       },
                       {
                         label: "Geboorteplaats",
@@ -856,6 +955,7 @@ export default function QuestionnairePrototype() {
                     {
                       label: "Wil je worden begraven of gecremeerd?",
                       name: "funeral_type",
+                      type: "select",
                     },
                     {
                       label:
@@ -869,7 +969,7 @@ export default function QuestionnairePrototype() {
                       full: true,
                     },
                   ].map((def) => (
-                    <Field key={def.name} def={def as FieldDef} />
+                    def.name === "funeral_type" ? <div className="wi-field" key={def.name}><label htmlFor="wi-funeral_type">{def.label}</label><select id="wi-funeral_type" value={values.funeral_type ?? ""} onChange={(e) => setValue("funeral_type", e.target.value)}><option value=""></option><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></select></div> : <Field key={def.name} def={def as FieldDef} />
                   ))}
                 </div>
               )}

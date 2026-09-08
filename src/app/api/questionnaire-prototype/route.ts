@@ -3,6 +3,23 @@ import { createEspoRecord } from "@/lib/espo";
 
 export const runtime = "nodejs";
 
+function validateSubmission(data: QuestionnaireData) {
+  const email = String(data.testator_email ?? "");
+  const phone = String(data.testator_phone ?? "").replace(/[ .()-]/g, "");
+  const dob = String(data.testator_dob ?? "");
+  if (!String(data.testator_full_name ?? "").trim() || !email || !phone) return "Vul je naam, e-mailadres en telefoonnummer in.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Vul een geldig e-mailadres in.";
+  if (!/^\+[1-9]\d{7,14}$/.test(phone)) return "Vul een geldig internationaal telefoonnummer in, beginnend met +.";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return "Vul de geboortedatum in als yyyy-mm-dd.";
+  const date = new Date(`${dob}T00:00:00Z`);
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== dob) return "Vul een bestaande geboortedatum in.";
+  const now = new Date();
+  const cutoff = new Date(Date.UTC(now.getUTCFullYear() - 18, now.getUTCMonth(), now.getUTCDate()));
+  if (date > cutoff) return "Je moet minimaal 18 jaar oud zijn om een testament te registreren.";
+  if (data.testator_eid && !/^784-(?:19|20)\d{2}-\d{7}-\d$/.test(String(data.testator_eid))) return "Vul het Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.";
+  return null;
+}
+
 type QuestionnaireData = Record<string, unknown>;
 
 const questionnaireFields = [
@@ -30,6 +47,22 @@ const questionnaireFields = [
   "existing_wills_countries",
   "pep",
   "business_countries",
+  "second_testator_full_name",
+  "second_testator_dob",
+  "second_testator_birth_place",
+  "second_testator_nationality",
+  "second_testator_passport",
+  "second_testator_eid",
+  "second_testator_email",
+  "second_testator_phone",
+  "second_testator_address",
+  "second_testator_tax_residency",
+  "second_testator_asset_countries",
+  "second_testator_asset_types",
+  "second_testator_existing_wills",
+  "second_testator_existing_wills_countries",
+  "second_testator_joint_assets_ownership",
+  "second_testator_funeral_type",
   "has_adult_children",
   "has_minor_children",
   "financial_guardian_full_name",
@@ -74,6 +107,7 @@ const personFields = [
   "passport",
   "eid",
   "address",
+  "parents",
 ] as const;
 
 const groupFields: Record<
@@ -381,6 +415,10 @@ const espoDateTime = (date: Date) =>
 export async function POST(request: Request) {
   try {
     const data = (await request.json()) as QuestionnaireData;
+    const validationError = validateSubmission(data);
+    if (validationError) {
+      return NextResponse.json({ success: false, message: validationError }, { status: 400 });
+    }
     const fullName = text(data.testator_full_name);
     const email = text(data.testator_email);
     const phone = text(data.testator_phone);

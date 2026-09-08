@@ -1,7 +1,9 @@
 export const landingSections = [
   {
     title: "Cross-border estate planning UAE | UAE-testamenten voor expats",
-    body: `Je wilt zelf bepalen wie je vermogen krijgt, wie je nalatenschap afwikkelt en wie voor je minderjarige kinderen zorgt.
+    body: `Wij stellen UAE-testamenten op voor singles, stellen en gezinnen.
+
+Je wilt zelf bepalen wie je vermogen krijgt, wie je nalatenschap afwikkelt en wie voor je minderjarige kinderen zorgt.
 
 Daarvoor heb je in de UAE een geregistreerd testament nodig. Zonder geregistreerd testament bepaalt de rechter hoe je nalatenschap wordt verdeeld. Daarbij wordt ook bij buitenlandse residents nog heel regelmatig een verdeling volgens de sharia law toegepast, aangezien de rechter daar bekend mee is.
 
@@ -36,13 +38,15 @@ De UAE heft zelf geen erfbelasting. Een ander land kan toch belasting heffen ove
 We verwerken de uitkomst van ons onderzoek in de bepalingen van je testament. Van een standaard testament is dus nooit sprake.`,
   },
   {
-    title: "Voor alle nationaliteiten en alle stellen",
-    body: `Wij stellen UAE-testamenten op voor cliënten van alle nationaliteiten.
+    title: "Voor alle nationaliteiten, singles en stellen",
+    body: `Wij stellen UAE-testamenten op voor singles en stellen van alle nationaliteiten.
 
 Ook binnen een relatie kunnen verschillende regels gelden. Als jij de Nederlandse nationaliteit hebt en je partner de Britse, kan je fiscale positie anders zijn dan die van je partner. Het is daarom niet voldoende om één testament op te stellen en daarin alleen de namen om te wisselen.
 
 Wij adviseren:
 
+singles zonder kinderen;
+alleenstaande ouders;
 stellen met dezelfde of verschillende nationaliteiten;
 getrouwde en ongehuwde stellen;
 stellen met kinderen uit eerdere relaties;
@@ -59,7 +63,7 @@ We beoordelen daarom de positie van iedere partner afzonderlijk. Daarna stemmen 
 Elke partner ontvangt een concept van zijn eigen testament. Je kunt je eigen tekst controleren, vragen stellen en wijzigingen doorgeven. Wij verwerken je opmerkingen voordat de testamenten worden vertaald en geregistreerd.`,
   },
   {
-    title: "Wat je krijgt voor AED 8.000",
+    title: "Wat je krijgt en wat het kost",
     body: `De vaste fee voor het cross-border estate planning proces van jou en je partner bedraagt bij de Abu Dhabi Courts (ADJD): AED 8.000 inclusief VAT.
 
 Daarin zijn opgenomen:
