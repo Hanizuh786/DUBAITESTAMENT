@@ -211,7 +211,7 @@ nav a {
   .hildaProfile { float: none; margin: 0 auto 24px; }
 }
 .faq {
-  background: var(--navy);
+  background: var(--navy) !important;
   color: #fff;
 }
 .faq h2 {
@@ -268,6 +268,8 @@ nav a {
   max-width: 960px;
   white-space: pre-line;
 }
+.faq a { color: var(--gold); }
+.faq .button { color: var(--navy); }
 .contact {
   padding: 120px 0;
   background: var(--gold);
