@@ -1,0 +1,43 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-135c4f132ef9764c.js",
+      "static/chunks/fd9d1056-c57e591c5cbfd6d8.js",
+      "static/chunks/117-025f8d6b95b9a9e3.js",
+      "static/chunks/main-app-41fd549e967adca7.js",
+      "static/chunks/app/_not-found/page-18400dfe2f47d6e8.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-135c4f132ef9764c.js",
+      "static/chunks/fd9d1056-c57e591c5cbfd6d8.js",
+      "static/chunks/117-025f8d6b95b9a9e3.js",
+      "static/chunks/main-app-41fd549e967adca7.js",
+      "static/css/da6fa9075821cd71.css",
+      "static/chunks/app/layout-9001770a1bd480fb.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-135c4f132ef9764c.js",
+      "static/chunks/fd9d1056-c57e591c5cbfd6d8.js",
+      "static/chunks/117-025f8d6b95b9a9e3.js",
+      "static/chunks/main-app-41fd549e967adca7.js",
+      "static/chunks/878-f0cfb2604b2f9014.js",
+      "static/chunks/app/page-f45c79cf810d5583.js"
+    ],
+    "/testamentvragenlijst/page": [
+      "static/chunks/webpack-135c4f132ef9764c.js",
+      "static/chunks/fd9d1056-c57e591c5cbfd6d8.js",
+      "static/chunks/117-025f8d6b95b9a9e3.js",
+      "static/chunks/main-app-41fd549e967adca7.js",
+      "static/chunks/954-2b21483cb78e4e99.js",
+      "static/chunks/app/testamentvragenlijst/page-299f0f5531e9cf34.js"
+    ],
+    "/questionnaire-prototype/page": [
+      "static/chunks/webpack-135c4f132ef9764c.js",
+      "static/chunks/fd9d1056-c57e591c5cbfd6d8.js",
+      "static/chunks/117-025f8d6b95b9a9e3.js",
+      "static/chunks/main-app-41fd549e967adca7.js",
+      "static/chunks/954-2b21483cb78e4e99.js",
+      "static/chunks/app/questionnaire-prototype/page-5b53a9ed95655a61.js"
+    ]
+  }
+}

@@ -55,7 +55,8 @@ a { color: #1265a0; }
 .serviceLine { display:block; color:#dce5ef; font-size:.68rem; margin-top:4px; }
 .button.secondary { background:transparent; color:var(--gold); border:1px solid var(--gold); margin-left:10px; }
 .faqFilters,.faqActions { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
-.faqFilters button,.faqActions button,.faqCopy { padding:9px 12px; cursor:pointer; border:1px solid #31506f; background:transparent; color:#fff; }
+.faqFilters button,.faqActions button,.faqCopy { padding:9px 12px; cursor:pointer; border:1px solid #31506f; background:rgba(255,255,255,.45); color:var(--navy); }
+.faqFilters button:hover,.faqActions button:hover,.faqCopy:hover { background:var(--gold); color:var(--navy); }
 .faqFilters button.active { background:var(--gold); color:var(--navy); }
 .faqBack { color:var(--gold); margin-right:18px; }
 .questionnaireRoute { padding:120px 0 60px; background:linear-gradient(180deg,#eef7fb 0%,#fff 42%); min-height:100vh; }
@@ -211,11 +212,11 @@ nav a {
   .hildaProfile { float: none; margin: 0 auto 24px; }
 }
 .faq {
-  background: var(--navy) !important;
-  color: #fff;
+  background: linear-gradient(180deg, rgba(238,247,251,.97), rgba(255,255,255,.96)), url('/images/dutch-lawyer-tulips.jpg') center / cover !important;
+  color: var(--ink);
 }
 .faq h2 {
-  color: #fff;
+  color: var(--navy);
 }
 .faqTools {
   display: flex;
@@ -226,16 +227,16 @@ nav a {
 .faqTools input {
   flex: 1;
   padding: 18px 20px;
-  background: #102b4c;
-  border: 1px solid #31506f;
-  color: #fff;
+  background: #fff;
+  border: 1px solid #9db2c3;
+  color: var(--ink);
   font-size: 1rem;
 }
 .faqTools span {
-  color: var(--gold);
+  color: #1265a0;
 }
 .accordion {
-  border-top: 1px solid #31506f;
+  border-top: 1px solid #9db2c3;
 }
 .accordion:last-child {
   border-bottom: 1px solid #31506f;
@@ -253,7 +254,7 @@ nav a {
   display: none;
 }
 .accordion summary span {
-  color: var(--gold);
+  color: #c28f36;
   font-size: 0.8rem;
 }
 .accordion summary strong {
@@ -263,12 +264,12 @@ nav a {
 }
 .answer {
   padding: 0 0 35px 71px;
-  color: #dce5ef;
+  color: #34404c;
   line-height: 1.8;
   max-width: 960px;
   white-space: pre-line;
 }
-.faq a { color: var(--gold); }
+.faq a { color: #1265a0; }
 .faq .button { color: var(--navy); }
 .contact {
   padding: 120px 0;

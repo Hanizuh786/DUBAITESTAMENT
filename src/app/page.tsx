@@ -122,7 +122,7 @@ export default function Home() {
         }}
       />
       <header className="header">
-        <div><a className="brand" href="#top">DUBAI<span>TESTAMENT</span>.NL</a><small className="serviceLine">Een dienst van Holland Legal Services</small></div>
+        <div><a className="brand" href="#top">DUBAI<span>TESTAMENT</span>.NL</a><small className="serviceLine">Een service van Dutch Lawyer in de UAE</small></div>
         <nav aria-label="Hoofdnavigatie">
           <a href="#estate">Estate Planning</a>
           <a href="/testamentvragenlijst">Testamentvragenlijst</a>
@@ -202,7 +202,7 @@ export default function Home() {
           </section>
         ))}
         <Faq items={faqs} />
-        <section id="contact" className="contact"><div className="wrap"><p className="eyebrow">DUBAITESTAMENT.NL</p><h2>Contact</h2><p>Wij zijn een responsief en flexibel advocatenkantoor. Waar mogelijk bieden wij onze diensten aan tegen een vaste prijs. Je hebt rechtstreeks contact met de experts die je zaak behandelen; wij besteden ons werk niet uit.</p><p>Voor de meeste zaken maken wij een eigen omgeving in ons online portaal. Daar kun je de voortgang volgen, correspondentie en documenten lezen en precies zien wat wij namens jou doen.</p><p>Wij behouden ons het recht voor om opdrachten van potentiële cliënten zonder opgaaf van reden te weigeren.</p><p><strong>Ons kantoor in Dubai:</strong><br />Dubai Hills Business Park<br />Building 4, Seventh Floor<br />Dubai, United Arab Emirates</p><p>Wij zijn niet altijd op kantoor aanwezig. Voor een persoonlijk gesprek is daarom een afspraak nodig. In de meeste gevallen is een online gesprek een uitstekend alternatief.</p><p><strong>Direct e-mailen:</strong><br /><a href="mailto:tuin@holland-legal-services.ae">tuin@holland-legal-services.ae</a><br /><a href="mailto:harts@holland-legal-services.ae">harts@holland-legal-services.ae</a></p><p>Voor meer digitale privacy kun je contact opnemen met Paul via Signal: paulharts.33, of Telegram: @Paul_Holland_Legal_Services.</p><a className="button" href="https://dutchlawyerindeuae.youcanbook.me">Boek een gesprek</a></div></section>
+        <section id="contact" className="contact"><div className="wrap"><p className="eyebrow">DUBAITESTAMENT.NL</p><h2>Contact</h2><p>Wij zijn een responsief en flexibel advocatenkantoor. Waar mogelijk bieden wij onze diensten aan tegen een vaste prijs. Je hebt rechtstreeks contact met de experts die je zaak behandelen; wij besteden ons werk niet uit.</p><p>Voor de meeste zaken maken wij een eigen omgeving in ons online portaal. Daar kun je de voortgang volgen, correspondentie en documenten lezen en precies zien wat wij namens jou doen.</p><p>Wij behouden ons het recht voor om opdrachten van potentiële cliënten zonder opgaaf van reden te weigeren.</p><p><strong>Ons kantoor in Dubai:</strong><br />Dubai Hills Business Park<br />Building 4, Seventh Floor<br />Dubai, United Arab Emirates</p><p>Wij zijn niet altijd op kantoor aanwezig. Voor een persoonlijk gesprek is daarom een afspraak nodig. In de meeste gevallen is een online gesprek een uitstekend alternatief.</p><p><strong>Direct e-mailen:</strong><br /><a href="mailto:hilda@dutchlawyerindeuae.nl">hilda@dutchlawyerindeuae.nl</a><br /><a href="mailto:paul@dutchlawyerindeuae.nl">paul@dutchlawyerindeuae.nl</a></p><p>Voor meer digitale privacy kun je contact opnemen met Paul via Signal: paulharts.33, of Telegram: @Paul_Holland_Legal_Services.</p><a className="button" href="https://dutchlawyerindeuae.youcanbook.me">Boek een gesprek</a></div></section>
       </main>
       <footer>
         <div className="wrap">
@@ -215,7 +215,7 @@ export default function Home() {
             Manager: Hiltje van der Tuin
           </p>
           <p>Dubai office: Dubai Hills Business Park, Building 4, Seventh Floor, Dubai, United Arab Emirates<br />
-            <a href="mailto:tuin@holland-legal-services.ae">tuin@holland-legal-services.ae</a> · <a href="mailto:harts@holland-legal-services.ae">harts@holland-legal-services.ae</a>
+            <a href="mailto:hilda@dutchlawyerindeuae.nl">hilda@dutchlawyerindeuae.nl</a> · <a href="mailto:paul@dutchlawyerindeuae.nl">paul@dutchlawyerindeuae.nl</a>
           </p>
           <p><a href="https://www.holland-legal-services.ae/our-privacy-policy.html">Privacyverklaring</a></p>
         </div>

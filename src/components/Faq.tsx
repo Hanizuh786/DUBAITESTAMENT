@@ -23,7 +23,7 @@ export default function Faq({ items }: FaqProps) {
     const normalizedQuery = query.trim().toLocaleLowerCase("nl");
 
     return items.filter((item) =>
-      `${item.question} ${item.answer} ${item.category ?? categoryNames[item.id % categoryNames.length]}`
+      `${item.question ?? ""} ${item.answer ?? ""} ${item.category ?? categoryNames[item.id % categoryNames.length]}`
         .toLocaleLowerCase("nl")
         .includes(normalizedQuery) && (!categories.length || categories.includes(item.category ?? categoryNames[item.id % categoryNames.length])),
     );
@@ -35,7 +35,7 @@ export default function Faq({ items }: FaqProps) {
     setOpen([id]);
     requestAnimationFrame(() => document.getElementById(`faq-${id}`)?.scrollIntoView({ block: "start" }));
   }, []);
-  const toggleAll = (expand: boolean) => setOpen(expand ? filteredItems.map((item) => item.id) : []);
+  const toggleAll = (expand: boolean) => setOpen(expand ? [...new Set(filteredItems.map((item) => item.id))] : []);
 
   return (
     <section id="faq" className="section faq">
@@ -61,14 +61,14 @@ export default function Faq({ items }: FaqProps) {
 
         <div className="accordions">
           {filteredItems.map((item) => (
-            <details key={item.id} id={`faq-${item.id}`} className="accordion" open={open.includes(item.id)} onToggle={(e) => setOpen((current) => e.currentTarget.open ? [...new Set([...current, item.id])] : current.filter((id) => id !== item.id))}>
+            <details key={item.id} id={`faq-${item.id}`} className="accordion" open={open.includes(item.id)} onToggle={(e) => { const isOpen = e.currentTarget.open; setOpen((current) => isOpen ? [...new Set([...current, item.id])] : current.filter((id) => id !== item.id)); }}>
               <summary>
                 <span>{String(item.id).padStart(2, "0")}</span>
                 <strong>{item.question}</strong>
               </summary>
              <div className="answer">
   {item.answer ? (
-    item.answer
+    String(item.answer)
       .split(/\n{2,}/)
       .map((paragraph, paragraphIndex) => (
         <p key={paragraphIndex}>
@@ -79,8 +79,6 @@ export default function Faq({ items }: FaqProps) {
     <p>Answer not loaded.</p>
   )}
               </div>
-              <a className="faqBack" href="#faq-search">Terug naar de vragen</a>
-              <button type="button" className="faqCopy" onClick={async (event) => { await navigator.clipboard?.writeText(`${location.origin}${location.pathname}#faq-${item.id}`); event.currentTarget.textContent = "Link gekopieerd"; }}>Link kopiëren</button>
             </details>
           ))}
         </div>
