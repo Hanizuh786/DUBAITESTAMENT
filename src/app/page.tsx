@@ -78,8 +78,8 @@ export default function Home() {
       {
         "@type": "LegalService",
         "@id": `${siteUrl}#legal-service`,
-        name: "DubaiTestament.nl",
-        alternateName: "Holland Legal Services",
+        name: "Holland Legal Services FZ-LLC",
+        alternateName: ["Dutch Lawyer in de UAE", "DubaiTestament.nl"],
         url: siteUrl,
         description:
           "Juridische en fiscale begeleiding bij UAE-testamenten en internationale estate planning voor expats.",

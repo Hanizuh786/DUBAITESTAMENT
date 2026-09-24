@@ -740,7 +740,7 @@ export default function QuestionnairePrototype() {
       <div className="questionnaire-page">
         <div id="will-intake" className="will-intake" ref={formTopRef}>
           <div className="wi-top">
-            <div className="wi-brand-masthead" aria-label="Dutch Lawyer in de UAE">
+            <div className="wi-brand-masthead" aria-label="Holland Legal Services FZ-LLC">
               <picture>
                 <source media="(max-width: 780px)" srcSet="/images/dutch-lawyer-tulips-mobile.jpg" />
                 <source media="(min-width: 781px)" srcSet="/images/dutch-lawyer-tulips-desktop.jpg" />
@@ -748,7 +748,7 @@ export default function QuestionnairePrototype() {
               </picture>
               <div className="wi-brand-lockup">
                 <strong>Dubaitestament.nl</strong>
-                <span>by&nbsp; Dutch Lawyer in de UAE</span>
+                <span>by&nbsp; Holland Legal Services FZ-LLC</span>
               </div>
             </div>
             <h1>Gegevens voor je UAE-testament</h1>
