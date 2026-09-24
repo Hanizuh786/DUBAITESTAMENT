@@ -571,7 +571,7 @@ export async function POST(request: Request) {
 
     const questionnaire = normalizeQuestionnaire(data);
     const recordName = `UAE-testament - ${fullName}`;
-    const payload = {
+    const rawPayload = {
       name: recordName,
       cName: recordName,
       cQuestionnaireSource: "Website",
@@ -652,6 +652,9 @@ export async function POST(request: Request) {
       cMainReason: text(data.main_reason),
       cAdditionalRemarks: text(data.additional_remarks),
     };
+    const payload = Object.fromEntries(
+      Object.entries(rawPayload).filter(([, value]) => value !== null && value !== undefined),
+    );
 
     const result = await createEspoRecord(payload);
 
