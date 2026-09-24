@@ -1,7 +1,6 @@
 import type { FaqItem } from "@/components/Faq";
 import generated from "./faqs.generated.json";
-// FAQ 50 and 51 are identical source entries; expose one canonical entry and
-// keep the public counter sequential.
-export const faqs = (generated as FaqItem[])
-  .filter((item) => item.id !== 51)
-  .map((item, index) => ({ ...item, id: index + 1 }));
+// Keep every complete item from the reconciled 70-item source available on
+// the public page. Repetition that is present in the approved source remains
+// visible rather than being silently merged during import.
+export const faqs = generated as FaqItem[];

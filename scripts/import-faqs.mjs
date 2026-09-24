@@ -48,8 +48,24 @@ const faqs = posts.map((post, index) => {
 
     title = firstLine || `Post ${index + 1}`;
     question = title;
-    answer = post.trim();
+    // Standalone exports use their first paragraph as the visible prompt.
+    // Do not render that same paragraph a second time in the answer.
+    answer = post.trim().startsWith(title)
+      ? post.trim().slice(title.length).trim()
+      : post.trim();
+    if (!answer) answer = "Deze informatie staat in de vraag hierboven.";
   }
+
+  // Remove export-only labels and author/timestamp rows while preserving the
+  // substantive question and answer text.
+  const cleanImportedMetadata = (value) => value
+    .replace(/^Hilda van der Tuin \(Dutch Lawyer\)\s+[^\n]*$/gim, "")
+    .replace(/^\s*(?:Vraag|raag|Antwoord)\s*:\s*/gim, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  question = cleanImportedMetadata(question);
+  answer = cleanImportedMetadata(answer);
 
   return {
     id: index + 1,

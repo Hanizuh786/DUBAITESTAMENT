@@ -141,7 +141,7 @@ export default function Home() {
         }}
       />
       <header className="header">
-        <div><a className="brand" href="#top">DUBAI<span>TESTAMENT</span>.NL</a><small className="serviceLine">Een service van Dutch Lawyer in de UAE</small></div>
+        <div><a className="brand" href="#top">DUBAI<span>TESTAMENT</span>.NL</a><small className="serviceLine">Een dienst van Holland Legal Services FZ-LLC</small></div>
         <nav aria-label="Hoofdnavigatie">
           <a href="#estate">Estate Planning</a>
           <a href="/testamentvragenlijst">Testamentvragenlijst</a>
@@ -200,8 +200,8 @@ export default function Home() {
               </div>
               <div className="prose">
                 {section.title === "Wat je krijgt en wat het kost" && <div className="priceBlocks">
-                  <div className="priceBlock"><h3>Single Will</h3><p>Een Single Will kost AED 7.000 inclusief VAT. De registratie bij ADJD kost AED 950.</p><p className="total">Totaal: AED 7.950</p><p>In de prijs zijn het videogesprek, het juridische en fiscale onderzoek, het onderzoek naar bestaande buitenlandse testamenten, het opstellen en aanpassen van je ADJD-testament, de Arabische vertaling en de begeleiding bij de registratie opgenomen.</p></div>
-                  <div className="priceBlock"><h3>Mirror Will</h3><p>Twee min of meer identieke testamenten (Mirror Wills) kosten samen AED 8.000 inclusief VAT. De registratie bij ADJD kost AED 950 per testament.</p><p className="total">Totaal: AED 9.900</p><p>In de prijs zijn opgenomen:</p><ul><li>een persoonlijk videogesprek van een uur met Hilda;</li><li>juridisch en fiscaal onderzoek voor beide partners;</li><li>onderzoek naar bestaande buitenlandse testamenten;</li><li>onderzoek naar internationale regels en verdragen;</li><li>twee afzonderlijk opgestelde ADJD-testamenten;</li><li>fiscale bepalingen die bij de nalatenschap passen;</li><li>verwerking van wijzigingen;</li><li>twee Arabische vertalingen, opgesteld door een erkende rechtbankvertaler;</li><li>begeleiding bij de registratie van je testament;</li><li>als eindproduct twee gelegaliseerde testamenten.</li></ul></div>
+                  <div className="priceBlock"><h3>ADJD Single Will</h3><p>ADJD Single Will: AED 7,000 including VAT.</p><p>ADJD court fees: AED 950 per person, charged separately.</p><p className="total">Totaal voor één persoon: AED 7,950.</p><p>In de prijs zijn het videogesprek, het juridische en fiscale onderzoek, het onderzoek naar bestaande buitenlandse testamenten, het opstellen en aanpassen van je ADJD-testament, de Arabische vertaling en de begeleiding bij de registratie opgenomen.</p></div>
+                  <div className="priceBlock"><h3>ADJD Mirror Wills</h3><p>ADJD Mirror Wills: AED 8,000 including VAT for two Wills.</p><p>ADJD court fees: AED 950 per person, charged separately.</p><p className="total">Totaal voor twee personen: AED 9,900.</p><p>In de prijs zijn opgenomen:</p><ul><li>een persoonlijk videogesprek van een uur met Hilda;</li><li>juridisch en fiscaal onderzoek voor beide partners;</li><li>onderzoek naar bestaande buitenlandse testamenten;</li><li>onderzoek naar internationale regels en verdragen;</li><li>twee afzonderlijk opgestelde ADJD-testamenten;</li><li>fiscale bepalingen die bij de nalatenschap passen;</li><li>verwerking van wijzigingen;</li><li>twee Arabische vertalingen, opgesteld door een erkende rechtbankvertaler;</li><li>begeleiding bij de registratie van je testament;</li><li>als eindproduct twee gelegaliseerde testamenten.</li></ul></div>
                 </div>}
                 {section.title === "Wat je krijgt en wat het kost" && <a className="button" href="https://dutchlawyerindeuae.youcanbook.me">Boek een gesprek</a>}
                 <Paragraphs text={section.body} />
