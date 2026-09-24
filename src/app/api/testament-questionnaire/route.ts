@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendQuestionnaireConfirmation } from "@/lib/email";
 import { createEspoRecord } from "@/lib/espo";
 
 export const runtime = "nodejs";
@@ -657,6 +658,26 @@ export async function POST(request: Request) {
     );
 
     const result = await createEspoRecord(payload);
+
+    try {
+      await sendQuestionnaireConfirmation({
+        fullName,
+        email,
+        willType: String(data.will_type),
+        notificationEmail: text(process.env.QUESTIONNAIRE_NOTIFICATION_EMAIL),
+      });
+    } catch (emailError) {
+      console.error("Questionnaire confirmation email failed", emailError);
+      return NextResponse.json(
+        {
+          success: false,
+          id: result.id,
+          message:
+            "Je gegevens zijn opgeslagen, maar de bevestigingsmail kon niet worden verzonden. Neem contact met ons op als je geen e-mail ontvangt.",
+        },
+        { status: 502 },
+      );
+    }
 
     return NextResponse.json(
       {
