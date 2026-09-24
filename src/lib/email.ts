@@ -1,5 +1,7 @@
 import "server-only";
 
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import nodemailer from "nodemailer";
 
 type ConfirmationEmail = {
@@ -9,8 +11,42 @@ type ConfirmationEmail = {
   notificationEmail?: string | null;
 };
 
+let fileEnvironment: Record<string, string> | null = null;
+
+function loadFileEnvironment() {
+  if (fileEnvironment) return fileEnvironment;
+
+  fileEnvironment = {};
+  const paths = [
+    process.env.SMTP_ENV_FILE,
+    join(process.cwd(), ".env.production"),
+    join(process.cwd(), ".env"),
+  ].filter((value): value is string => Boolean(value));
+
+  for (const path of paths) {
+    try {
+      const contents = readFileSync(path, "utf8");
+      for (const line of contents.split(/\r?\n/)) {
+        const match = line.match(/^([A-Z0-9_]+)=(.*)$/);
+        if (!match) continue;
+        const value = match[2].trim().replace(/^(['"])(.*)\1$/, "$2");
+        fileEnvironment[match[1]] = value;
+      }
+      break;
+    } catch {
+      // Try the next environment-file location.
+    }
+  }
+
+  return fileEnvironment;
+}
+
+function environmentValue(name: string) {
+  return process.env[name]?.trim() || loadFileEnvironment()[name]?.trim();
+}
+
 function requiredEnvironment(name: string) {
-  const value = process.env[name]?.trim();
+  const value = environmentValue(name);
   if (!value) throw new Error(`Email environment configuration is missing: ${name}`);
   return value;
 }
@@ -38,8 +74,8 @@ export async function sendQuestionnaireConfirmation({
   const port = Number(requiredEnvironment("SMTP_PORT"));
   const user = requiredEnvironment("SMTP_USER");
   const password = requiredEnvironment("SMTP_PASSWORD");
-  const from = process.env.SMTP_FROM?.trim() || user;
-  const replyTo = process.env.SMTP_REPLY_TO?.trim() || from;
+  const from = environmentValue("SMTP_FROM") || user;
+  const replyTo = environmentValue("SMTP_REPLY_TO") || from;
   const label = willType === "mirror" ? "Mirror Will" : "Single Will";
   const recipients = [email, notificationEmail?.trim()].filter(
     (address, index, all): address is string =>
