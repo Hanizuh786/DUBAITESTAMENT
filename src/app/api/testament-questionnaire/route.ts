@@ -14,6 +14,14 @@ function validDate(value: string) {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
+function futureDate(value: string) {
+  if (!validDate(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  const now = new Date();
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return date.getTime() > today;
+}
+
 function adultDate(value: string) {
   const date = new Date(`${value}T00:00:00Z`);
   const now = new Date();
@@ -57,10 +65,12 @@ function validateSubmission(input: QuestionnaireData) {
   if (!EMAIL_PATTERN.test(email)) return "Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.";
   if (!PHONE_PATTERN.test(phone)) return "Vul een geldig internationaal telefoonnummer in, bijvoorbeeld +31612345678.";
   if (!validDate(dob)) return "Vul een bestaande geboortedatum in als yyyy-mm-dd.";
+  if (futureDate(dob)) return "Een geboortedatum kan niet in de toekomst liggen.";
   if (!adultDate(dob)) return "Je moet minimaal 18 jaar oud zijn om een testament te registreren.";
   if (data.testator_eid && !EID_PATTERN.test(String(data.testator_eid))) return "Vul het Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.";
   for (const [name, value] of Object.entries(data)) {
     if (name.endsWith("_dob") && name !== "testator_dob" && value && !validDate(String(value))) return "Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.";
+    if (name.endsWith("_dob") && value && futureDate(String(value))) return "Een geboortedatum kan niet in de toekomst liggen.";
     if (name.endsWith("_eid") && name !== "testator_eid" && value && !EID_PATTERN.test(String(value))) return "Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X.";
   }
   for (const group of ["executors", "beneficiaries", "adult_children", "minor_children", "other_parents", "temporary_guardians", "permanent_guardians"]) {
@@ -70,6 +80,9 @@ function validateSubmission(input: QuestionnaireData) {
       if (!person || typeof person !== "object") continue;
       const personData = person as QuestionnaireData;
       if (personData.dob && !validDate(String(personData.dob))) return "Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.";
+      if (personData.dob && futureDate(String(personData.dob))) return "Een geboortedatum kan niet in de toekomst liggen.";
+      if (group === "adult_children" && personData.dob && !adultDate(String(personData.dob))) return "De geboortedatum van een meerderjarig kind moet bij een leeftijd van 18 jaar of ouder passen.";
+      if (group === "minor_children" && personData.dob && adultDate(String(personData.dob))) return "De geboortedatum van een minderjarig kind moet bij een leeftijd onder 18 jaar passen.";
       if (personData.eid && !EID_PATTERN.test(String(personData.eid))) return "Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X.";
     }
   }
@@ -82,6 +95,7 @@ function validateSubmission(input: QuestionnaireData) {
     if (!EMAIL_PATTERN.test(secondEmail)) return "Vul een geldig e-mailadres in voor de tweede testator.";
     if (!PHONE_PATTERN.test(secondPhone)) return "Vul een geldig internationaal telefoonnummer in voor de tweede testator.";
     if (!validDate(secondDob)) return "Vul een bestaande geboortedatum in voor de tweede testator.";
+    if (futureDate(secondDob)) return "De geboortedatum van de tweede testator kan niet in de toekomst liggen.";
     if (!adultDate(secondDob)) return "De tweede testator moet minimaal 18 jaar oud zijn.";
     if (data.second_testator_eid && !EID_PATTERN.test(String(data.second_testator_eid))) return "Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X.";
   }

@@ -51,13 +51,13 @@ export default function Faq({ items }: FaqProps) {
               ? "https://www.notaris.nl/page/het-opvolgersarchief"
               : clean;
       const label = href.includes("rechtspraak")
-        ? "het formulier om een voogd aan te wijzen"
+        ? "Voogd aanwijzen"
         : href.includes("bodymuseum")
-          ? "het Body Museum van Khalifa University"
+          ? "Body Museum van Khalifa University"
           : href.includes("difccourts")
-            ? "het Register of Wills Draftsmen van DIFC"
+            ? "Register of Wills Draftsmen"
             : href.includes("opvolgersarchief")
-              ? "het Opvolgersarchief van Notaris.nl"
+              ? "Opvolgersarchief"
               : clean;
       return <a key={index} href={href}>{label}</a>;
     });

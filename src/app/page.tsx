@@ -199,17 +199,6 @@ export default function Home() {
                 </figure>
               </div>
               <div className="prose">
-                {section.title === "Zo verloopt het" && (
-                  <figure className="hildaProfile">
-                    <Image
-                      src="/images/foto-hilda.jpg"
-                      alt="mr. Hilda van der Tuin"
-                      width={304}
-                      height={304}
-                    />
-                    <figcaption>mr. Hilda van der Tuin</figcaption>
-                  </figure>
-                )}
                 {section.title === "Wat je krijgt en wat het kost" && <div className="priceBlocks">
                   <div className="priceBlock"><h3>Single Will</h3><p>Een Single Will kost AED 7.000 inclusief VAT. De registratie bij ADJD kost AED 950.</p><p className="total">Totaal: AED 7.950</p><p>In de prijs zijn het videogesprek, het juridische en fiscale onderzoek, het onderzoek naar bestaande buitenlandse testamenten, het opstellen en aanpassen van je ADJD-testament, de Arabische vertaling en de begeleiding bij de registratie opgenomen.</p></div>
                   <div className="priceBlock"><h3>Mirror Will</h3><p>Twee min of meer identieke testamenten (Mirror Wills) kosten samen AED 8.000 inclusief VAT. De registratie bij ADJD kost AED 950 per testament.</p><p className="total">Totaal: AED 9.900</p><p>In de prijs zijn opgenomen:</p><ul><li>een persoonlijk videogesprek van een uur met Hilda;</li><li>juridisch en fiscaal onderzoek voor beide partners;</li><li>onderzoek naar bestaande buitenlandse testamenten;</li><li>onderzoek naar internationale regels en verdragen;</li><li>twee afzonderlijk opgestelde ADJD-testamenten;</li><li>fiscale bepalingen die bij de nalatenschap passen;</li><li>verwerking van wijzigingen;</li><li>twee Arabische vertalingen, opgesteld door een erkende rechtbankvertaler;</li><li>begeleiding bij de registratie van je testament;</li><li>als eindproduct twee gelegaliseerde testamenten.</li></ul></div>
@@ -223,7 +212,7 @@ export default function Home() {
         <section className="section tint" id="over-ons">
           <div className="wrap grid">
             <div className="sectionIntro"><p className="sectionNo">06</p><h2>Over ons</h2><figure className="sectionVisual"><Image src="/images/foto-hilda.jpg" alt="mr. Hilda van der Tuin" fill sizes="(max-width: 760px) calc(100vw - 28px), 42vw" /></figure></div>
-            <div className="prose"><p>De dienst wordt geleverd door Holland Legal Services FZ-LLC. Dutch Lawyer in de UAE is de handelsnaam van Holland Legal Services FZ-LLC.</p><p>Hilda is advocaat, notaris en mediator in de Verenigde Arabische Emiraten. Zij heeft een Master of Laws in notarieel recht en is Registered Wills Draftsman voor DIFC. Zij werkt al vijftien jaar in de Verenigde Arabische Emiraten.</p><p>Bij de Koninklijke Notariële Beroepsorganisatie in Den Haag was Hilda manager van de afdelingen Praktijkzaken en Juridische Zaken. Zij gaf leiding aan twintig juristen en maakte deel uit van het managementteam.</p></div>
+            <div className="prose"><p>De dienst wordt geleverd door Holland Legal Services FZ-LLC. Dutch Lawyer in de UAE is de handelsnaam van Holland Legal Services FZ-LLC.</p><p>Hilda is advocaat, notaris en mediator in de Verenigde Arabische Emiraten. Zij heeft een Master of Laws in notarieel recht en is Registered Wills Draftsman voor DIFC. Zij werkt al vijftien jaar in de Verenigde Arabische Emiraten.</p><p>Bij de Koninklijke Notariële Beroepsorganisatie in Den Haag was Hilda manager van de afdelingen Praktijkzaken en Juridische Zaken (hieronder vallen ook het voor notarissen toepasselijke tuchtrecht en het WPNR tijdschrift). Zij gaf leiding aan twintig juristen en maakte deel uit van het MT.</p></div>
           </div>
         </section>
         <Faq items={faqs} />

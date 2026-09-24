@@ -70,6 +70,7 @@ const personalFields: FieldDef[] = [
   {
     label: "Geboortedatum",
     name: "testator_dob",
+    type: "date",
     placeholder: "yyyy-mm-dd",
     inputMode: "numeric",
     hint: "Format: yyyy-mm-dd, bijvoorbeeld 1980-06-30",
@@ -161,7 +162,7 @@ const personalFields: FieldDef[] = [
 
 const secondTestatorFields: FieldDef[] = [
   { label: "Naam tweede testator (zoals in paspoort)", name: "second_testator_full_name", required: true },
-  { label: "Geboortedatum tweede testator (yyyy-mm-dd)", name: "second_testator_dob", placeholder: "yyyy-mm-dd", inputMode: "numeric", required: true },
+  { label: "Geboortedatum tweede testator (yyyy-mm-dd)", name: "second_testator_dob", type: "date", placeholder: "yyyy-mm-dd", inputMode: "numeric", required: true },
   { label: "Geboorteplaats", name: "second_testator_birth_place" },
   { label: "Nationaliteit", name: "second_testator_nationality" },
   { label: "Paspoortnummer", name: "second_testator_passport" },
@@ -262,7 +263,7 @@ function Field({ def }: { def: FieldDef }) {
       ) : (
         <input
           id={id}
-          type={def.type === "email" ? "email" : "text"}
+          type={def.type === "email" ? "email" : def.type === "date" ? "date" : "text"}
           inputMode={def.inputMode}
           placeholder={placeholder}
           pattern={def.type === "email" ? "[^\\s@]+@[^\\s@]+\\.[^\\s@]+" : undefined}
@@ -353,6 +354,13 @@ export default function QuestionnairePrototype() {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
     const date = new Date(`${value}T00:00:00Z`);
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  }
+  function futureDate(value: string) {
+    if (!validDate(value)) return false;
+    const date = new Date(`${value}T00:00:00Z`);
+    const now = new Date();
+    const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    return date.getTime() > today;
   }
   function adultDate(value: string) {
     const now = new Date();
@@ -610,6 +618,18 @@ export default function QuestionnairePrototype() {
           setError("Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.");
           return false;
         }
+        if (person.dob && futureDate(person.dob)) {
+          setError("Een geboortedatum kan niet in de toekomst liggen.");
+          return false;
+        }
+        if (group === "adult_children" && person.dob && !adultDate(person.dob)) {
+          setError("De geboortedatum van een meerderjarig kind moet bij een leeftijd van 18 jaar of ouder passen.");
+          return false;
+        }
+        if (group === "minor_children" && person.dob && adultDate(person.dob)) {
+          setError("De geboortedatum van een minderjarig kind moet bij een leeftijd onder 18 jaar passen.");
+          return false;
+        }
         if (person.eid && !validEid(person.eid)) {
           setError("Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.");
           return false;
@@ -620,6 +640,10 @@ export default function QuestionnairePrototype() {
       if (!isApplicable(name)) continue;
       if (name.endsWith("_dob") && value && !validDate(value)) {
         setError(`Vul ${name.includes("financial") ? "de geboortedatum van de financieel voogd" : "iedere geboortedatum"} in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.`);
+        return false;
+      }
+      if (name.endsWith("_dob") && value && futureDate(value)) {
+        setError("Een geboortedatum kan niet in de toekomst liggen.");
         return false;
       }
       if (name.endsWith("_eid") && value && !validEid(value)) {
