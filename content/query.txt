@@ -166,7 +166,7 @@ Vraag:
 Het proces voor een testament is als volgt:
 1. Je boekt een afspraak voor een videoconference om je wensen door te spreken. Normaalgesproken is je partner, als je die hebt, hier ook bij.
 2. Ik maak gedurende het gesprek notities en stuur die na afloop van het gesprek toe.
-3. Je vult het Excel document "what do we need from you" in en stuurt het toe.
+3. Je vult de online testamentvragenlijst in en stuurt ons de gevraagde documenten toe. Tijdens het verdere proces gebruik je UAE Pass voor de identificatie en digitale ondertekening wanneer dat wordt gevraagd.
 4. Je stuurt scans van de gevraagde documenten toe.
 5. Ik ga het testament opstellen in concept. Dit wordt per email doorgenomen met de klant, net zo lang tot er een goedgekeurde versie ligt.
 6. Het testament wordt in het Arabisch vertaald door een Rechtbankvertaler (wij geven opdracht en betalen hiervoor).
@@ -606,7 +606,7 @@ raag: #Hilda, hoe gaat het opstellen van een expattestament bij de Abu Dhabi cou
 Het proces voor een testament is als volgt:
 1. Je boekt een afspraak voor een videoconference om je wensen door te spreken. Normaalgesproken is je partner, als je die hebt, hier ook bij.
 2. Ik maak gedurende het gesprek notities en stuur die na afloop van het gesprek toe.
-3. Je vult het Excel document "what do we need from you" in en stuurt het toe.
+3. Je vult de online testamentvragenlijst in en stuurt ons de gevraagde documenten toe. Tijdens het verdere proces gebruik je UAE Pass voor de identificatie en digitale ondertekening wanneer dat wordt gevraagd.
 4. Je stuurt scans van de gevraagde documenten toe.
 5. Ik ga het testament opstellen in concept. Dit wordt per email doorgenomen met de klant, net zo lang tot er een goedgekeurde versie ligt.
 6. Het testament wordt in het Arabisch vertaald door een Rechtbankvertaler (wij geven opdracht en betalen hiervoor).
@@ -1100,7 +1100,6 @@ Post 70
 
 Vraag: #Hilda, check jij bij het opstellen van een testament ook of iemand dement is?
 Antwoord: Ja, ik ben verplicht om te controleren of degene die een testament wil opstellen zijn verstandelijke vermogens heeft. Indien nodig zal een arts worden gevraagd een medisch rapport op te stellen over de geestesgesteldheid van de betreffende persoon. Als iemand nog heel regelmatig heldere momenten heeft dan kunnen we nog steeds wel een testament opstellen. 
-
 
 
 
