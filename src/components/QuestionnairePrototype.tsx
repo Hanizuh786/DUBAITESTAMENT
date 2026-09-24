@@ -39,6 +39,9 @@ type FieldDef = {
   hint?: string;
 };
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
+
 const stepDefinitions = [
   ["person", "1. Jouw gegevens"],
   ["executors", "2. Executeurs"],
@@ -58,7 +61,7 @@ const stepDefinitions = [
 ] as const;
 
 const personalFields: FieldDef[] = [
-  { label: "Wil je een Single Will of een Mirror Will laten opstellen?", name: "will_type", required: true },
+  { label: "Wil je een Single Will of een Mirror Will laten opstellen?", name: "will_type", type: "select", required: true },
   {
     label: "Volledige naam (zoals in je paspoort)",
     name: "testator_full_name",
@@ -166,12 +169,28 @@ const secondTestatorFields: FieldDef[] = [
   { label: "E-mailadres tweede testator", name: "second_testator_email", type: "email", required: true },
   { label: "Telefoonnummer tweede testator (inclusief landcode)", name: "second_testator_phone", required: true, placeholder: "+971 ...", inputMode: "tel" },
   { label: "Adres", name: "second_testator_address", type: "textarea", full: true },
+  { label: "Burgerlijke staat", name: "second_testator_marital_status" },
+  { label: "Heb je een partner?", name: "second_testator_has_partner", type: "yesno" },
+  { label: "Heb je kinderen?", name: "second_testator_has_children", type: "yesno" },
   { label: "Fiscale woonlanden", name: "second_testator_tax_residency", full: true },
+  { label: "In welke landen heb je de afgelopen 20 jaar gewoond? Vermeld per land ongeveer van wanneer tot wanneer.", name: "second_testator_residence_history_20_years", type: "textarea", full: true },
+  { label: "Beroep", name: "second_testator_profession" },
+  { label: "Werkgever of bedrijf", name: "second_testator_employer_company" },
+  { label: "Heb je geld of andere bezittingen ondergebracht in een vennootschap, holding, trust of foundation?", name: "second_testator_asset_structures", type: "yesno" },
+  { label: "Beschrijving van de vermogensstructuur", name: "second_testator_asset_structures_description", type: "textarea", full: true },
   { label: "Landen waar vermogen aanwezig is", name: "second_testator_asset_countries", full: true },
   { label: "Soorten vermogen", name: "second_testator_asset_types", type: "textarea", full: true },
+  { label: "Heb je cryptovaluta of andere digitale bezittingen?", name: "second_testator_digital_assets", type: "yesno" },
+  { label: "Heb je geregeld hoe je executeur na je overlijden toegang krijgt tot deze digitale bezittingen?", name: "second_testator_digital_assets_executor_access", type: "yesno" },
   { label: "Heb je al een testament in een ander land?", name: "second_testator_existing_wills", type: "yesno" },
+  { label: "In welk land of welke landen?", name: "second_testator_existing_wills_countries" },
+  { label: "Bekleed jij of bekleedt iemand uit je naaste familie een belangrijke politieke of publieke functie?", name: "second_testator_pep", type: "yesno", full: true },
+  { label: "In welke landen heb je een bedrijf of doe je zaken?", name: "second_testator_business_countries", type: "textarea", full: true },
   { label: "Gezamenlijke bezittingen en eigendomspercentage", name: "second_testator_joint_assets_ownership", type: "textarea", full: true },
-  { label: "Uitvaartwens", name: "second_testator_funeral_type", type: "select" },
+  { label: "Wil je orgaandonor zijn?", name: "second_testator_organ_donor", type: "yesno" },
+  { label: "Wil je worden begraven of gecremeerd?", name: "second_testator_funeral_type", type: "select" },
+  { label: "In welk land wil je worden begraven of gecremeerd?", name: "second_testator_funeral_country" },
+  { label: "Andere wensen voor je uitvaart", name: "second_testator_funeral_instructions", type: "textarea", full: true },
 ];
 
 const groupMap: Record<PersonKind, Group> = {
@@ -238,7 +257,7 @@ function Field({ def }: { def: FieldDef }) {
           required={def.required}
         >
           <option value="">Kies een antwoord</option>
-          {def.type === "yesno" ? <><option value="yes">Ja</option><option value="no">Nee</option></> : def.name.includes("funeral") ? <><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></> : <><option value="married">Getrouwd</option><option value="unmarried">Ongehuwd</option><option value="divorced">Gescheiden</option><option value="widowed">Weduwe/weduwnaar</option></>}
+          {def.type === "yesno" ? <><option value="yes">Ja</option><option value="no">Nee</option></> : def.name === "will_type" ? <><option value="single">Single Will</option><option value="mirror">Mirror Will</option></> : def.name.includes("funeral") ? <><option value="burial">Begraven</option><option value="cremation">Gecremeerd</option><option value="science">Ter beschikking stellen aan de wetenschap</option><option value="alkaline">Bio-crematie / oplossen</option></> : <><option value="married">Getrouwd</option><option value="unmarried">Ongehuwd</option><option value="divorced">Gescheiden</option><option value="widowed">Weduwe/weduwnaar</option></>}
         </select>
       ) : (
         <input
@@ -289,7 +308,7 @@ export default function QuestionnairePrototype() {
   const active = visibleSteps[current] ?? visibleSteps[0];
   const setValue = (name: string, value: string) => {
     if (name.endsWith("eid")) value = formatEid(value);
-    if (name === "testator_phone") {
+    if (name.endsWith("phone")) {
       value = value.replace(/[^+\d]/g, "");
       value = value.startsWith("+") ? "+" + value.slice(1).replace(/\D/g, "") : value.replace(/\D/g, "");
       value = value.slice(0, 16);
@@ -325,12 +344,13 @@ export default function QuestionnairePrototype() {
   };
 
   function formatEid(value: string) {
-    const digits = value.replace(/\\D/g, "").replace(/^784/, "").slice(0, 15);
-    const all = `784${digits}`;
+    const digits = value.replace(/\D/g, "").slice(0, 16);
+    if (!digits) return "";
+    const all = digits.startsWith("784") ? digits : digits;
     return [all.slice(0, 3), all.slice(3, 7), all.slice(7, 14), all.slice(14)].filter(Boolean).join("-");
   }
   function validDate(value: string) {
-    if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
     const date = new Date(`${value}T00:00:00Z`);
     return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
   }
@@ -340,6 +360,36 @@ export default function QuestionnairePrototype() {
     return new Date(`${value}T00:00:00Z`) <= cutoff;
   }
   function validEid(value: string) { return !value || /^784-(?:19|20)\d{2}-\d{7}-\d$/.test(value); }
+
+  function isApplicable(name: string) {
+    if (name.startsWith("second_testator_") && values.will_type !== "mirror") return false;
+    if (name === "asset_structures_description" && values.asset_structures !== "yes") return false;
+    if (name === "digital_assets_executor_access" && values.digital_assets !== "yes") return false;
+    if (name === "existing_wills_countries" && values.existing_wills !== "yes") return false;
+    if (name.startsWith("second_testator_asset_structures") && name.endsWith("description") && values.second_testator_asset_structures !== "yes") return false;
+    if (name === "second_testator_digital_assets_executor_access" && values.second_testator_digital_assets !== "yes") return false;
+    if (name === "second_testator_existing_wills_countries" && values.second_testator_existing_wills !== "yes") return false;
+    if (name.startsWith("pets_") && values.has_pets !== "yes") return false;
+    return true;
+  }
+
+  function buildSubmission() {
+    const applicableValues = Object.fromEntries(
+      Object.entries(values).filter(([name]) => isApplicable(name)),
+    );
+    const applicableGroups = Object.fromEntries(
+      Object.entries(groups).map(([group, people]) => [
+        group,
+        group === "adult_children" && values.has_adult_children !== "yes" ||
+        ["minor_children", "other_parents", "temporary_guardians", "permanent_guardians"].includes(group) && values.has_minor_children !== "yes"
+          ? []
+          : people
+              .map(({ id: _id, ...person }) => Object.fromEntries(Object.entries(person).filter(([name]) => isApplicable(name))))
+              .filter((person) => Object.values(person).some((value) => value.trim())),
+      ]),
+    );
+    return { ...applicableValues, ...applicableGroups };
+  }
 
   function PersonFields({ kind }: { kind: PersonKind }) {
     const group = groupMap[kind];
@@ -380,10 +430,11 @@ export default function QuestionnairePrototype() {
                 },
               ].map((f) => (
                 <div className="wi-field" key={f.name}>
-                  <label>{f.label}</label>
+                  <label htmlFor={`wi-${kind}-${person.id}-${f.name}`}>{f.label}</label>
                   {f.name === "eid" && <small className="wi-hint">Format: 784-YYYY-XXXXXXX-X</small>}
                   {f.name === "dob" && <small className="wi-hint">Format: yyyy-mm-dd, bijvoorbeeld 1980-06-30</small>}
                   <input
+                    id={`wi-${kind}-${person.id}-${f.name}`}
                     type="text"
                     placeholder={f.name === "eid" ? "784-YYYY-XXXXXXX-X" : f.name === "dob" ? "yyyy-mm-dd" : f.name === "full_name" ? "Bijvoorbeeld: Jan de Vries" : f.name === "passport" ? "Bijvoorbeeld: NP1234567" : "Typ hier je antwoord..."}
                     inputMode={f.name === "eid" ? "numeric" : (f as FieldDef).inputMode}
@@ -395,8 +446,9 @@ export default function QuestionnairePrototype() {
                 </div>
               ))}
               <div className="wi-field full">
-                <label>Adres</label>
+                <label htmlFor={`wi-${kind}-${person.id}-address`}>Adres</label>
                 <textarea
+                  id={`wi-${kind}-${person.id}-address`}
                   value={person.address ?? ""}
                   onChange={(e) =>
                     updatePerson(kind, person.id, "address", e.target.value)
@@ -529,8 +581,16 @@ export default function QuestionnairePrototype() {
                     <option value="current">Huidige relatie</option>
                     <option value="previous">Eerdere relatie</option>
                   </select>
-                  <label>Wie zijn de ouders van dit kind?</label>
-                  <input value={person.parents ?? ""} onChange={(e) => updatePerson(kind, person.id, "parents", e.target.value)} placeholder="Bijvoorbeeld: beide testatoren, ik alleen, of naam andere ouder" />
+                    <label htmlFor={`wi-${kind}-${person.id}-parents`}>Wie zijn de ouders van dit kind?</label>
+                    <select id={`wi-${kind}-${person.id}-parents`} value={person.parents ?? ""} onChange={(e) => updatePerson(kind, person.id, "parents", e.target.value)}>
+                      <option value="">Kies de ouder(s)</option>
+                      <option value="testator">Alleen de eerste testator</option>
+                      <option value="both_testators">Beide testatoren</option>
+                      <option value="second_testator">Alleen de tweede testator</option>
+                      <option value="other_parent">De andere ouder</option>
+                      <option value="testator_and_other_parent">Eerste testator en andere ouder</option>
+                      <option value="second_testator_and_other_parent">Tweede testator en andere ouder</option>
+                    </select>
                 </div>
               )}
             </div>
@@ -542,7 +602,9 @@ export default function QuestionnairePrototype() {
 
   function validate() {
     setError("");
-    for (const people of Object.values(groups)) {
+    for (const [group, people] of Object.entries(groups)) {
+      if (group === "adult_children" && values.has_adult_children !== "yes") continue;
+      if (["minor_children", "other_parents", "temporary_guardians", "permanent_guardians"].includes(group) && values.has_minor_children !== "yes") continue;
       for (const person of people) {
         if (person.dob && !validDate(person.dob)) {
           setError("Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.");
@@ -552,6 +614,17 @@ export default function QuestionnairePrototype() {
           setError("Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.");
           return false;
         }
+      }
+    }
+    for (const [name, value] of Object.entries(values)) {
+      if (!isApplicable(name)) continue;
+      if (name.endsWith("_dob") && value && !validDate(value)) {
+        setError(`Vul ${name.includes("financial") ? "de geboortedatum van de financieel voogd" : "iedere geboortedatum"} in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.`);
+        return false;
+      }
+      if (name.endsWith("_eid") && value && !validEid(value)) {
+        setError("Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.");
+        return false;
       }
     }
     if (active[0] === "person") {
@@ -565,17 +638,22 @@ export default function QuestionnairePrototype() {
       }
       if (!validDate(values.testator_dob)) { setError("Vul je geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30."); return false; }
       if (!adultDate(values.testator_dob)) { setError("Je moet minimaal 18 jaar oud zijn om een testament te registreren."); return false; }
-      if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(values.testator_email)) { setError("Vul een geldig e-mailadres in."); return false; }
-      if (!/^\\+[1-9]\\d{7,14}$/.test(values.testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in, beginnend met +."); return false; }
+      if (!EMAIL_PATTERN.test(values.testator_email)) { setError("Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl."); return false; }
+      if (!PHONE_PATTERN.test(values.testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in, bijvoorbeeld +31612345678."); return false; }
       if (!validEid(values.testator_eid)) { setError("Vul het Emirates ID in als 784-YYYY-XXXXXXX-X."); return false; }
       if (values.will_type === "mirror") {
         const requiredSecond = secondTestatorFields.find((field) => field.required && !values[field.name]?.trim());
         if (requiredSecond) { setError("Vul het verplichte veld in voor de tweede testator: " + requiredSecond.label + "."); return false; }
         if (!validDate(values.second_testator_dob)) { setError("Vul de geboortedatum van de tweede testator in als yyyy-mm-dd."); return false; }
-        if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(values.second_testator_email)) { setError("Vul een geldig e-mailadres in voor de tweede testator."); return false; }
-        if (!/^\\+[1-9]\\d{7,14}$/.test(values.second_testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in voor de tweede testator."); return false; }
+        if (!adultDate(values.second_testator_dob)) { setError("De tweede testator moet minimaal 18 jaar oud zijn."); return false; }
+        if (!EMAIL_PATTERN.test(values.second_testator_email)) { setError("Vul een geldig e-mailadres in voor de tweede testator, bijvoorbeeld naam@voorbeeld.nl."); return false; }
+        if (!PHONE_PATTERN.test(values.second_testator_phone.replace(/[ .()-]/g, ""))) { setError("Vul een geldig internationaal telefoonnummer in voor de tweede testator, bijvoorbeeld +31612345678."); return false; }
         if (!validEid(values.second_testator_eid)) { setError("Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X."); return false; }
       }
+    }
+    if (active[0] === "children" && (!values.has_adult_children || !values.has_minor_children)) {
+      setError("Beantwoord zowel de vraag over meerderjarige kinderen als de vraag over minderjarige kinderen.");
+      return false;
     }
     return true;
   }
@@ -597,20 +675,10 @@ export default function QuestionnairePrototype() {
     setSubmitting(true);
     setError("");
     try {
-      const submittedGroups = Object.fromEntries(
-        Object.entries(groups).map(([group, people]) => [
-          group,
-          people
-            .map(({ id: _id, ...person }) => person)
-            .filter((person) =>
-              Object.values(person).some((value) => value.trim()),
-            ),
-        ]),
-      );
       const response = await fetch("/api/testament-questionnaire", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, ...submittedGroups }),
+        body: JSON.stringify(buildSubmission()),
       });
       if (!response.ok) {
         const result = (await response.json().catch(() => null)) as {
@@ -649,7 +717,11 @@ export default function QuestionnairePrototype() {
         <div id="will-intake" className="will-intake" ref={formTopRef}>
           <div className="wi-top">
             <div className="wi-brand-masthead" aria-label="Dutch Lawyer in de UAE">
-              <img src="/images/dutch-lawyer-tulips.jpg" alt="Dutch Lawyer in de UAE" />
+              <picture>
+                <source media="(max-width: 780px)" srcSet="/images/dutch-lawyer-tulips-mobile.jpg" />
+                <source media="(min-width: 781px)" srcSet="/images/dutch-lawyer-tulips-desktop.jpg" />
+                <img src="/images/dutch-lawyer-tulips-desktop.jpg" alt="Tulpen als achtergrond bij de testamentvragenlijst" />
+              </picture>
               <div className="wi-brand-lockup">
                 <strong>Dubaitestament.nl</strong>
                 <span>by&nbsp; Dutch Lawyer in de UAE</span>
@@ -678,8 +750,13 @@ export default function QuestionnairePrototype() {
                   {values.will_type === "mirror" && (
                     <>
                       <div className="wi-field full"><h3 className="wi-subheading">Gegevens tweede testator</h3><p className="wi-note">Vul de gegevens van de tweede testator afzonderlijk in. Antwoorden worden niet automatisch overgenomen.</p></div>
-                      {secondTestatorFields.map((def) => <Field key={def.name} def={def} />)}
-                      {values.second_testator_existing_wills === "yes" && <Field def={{ label: "In welk land of welke landen?", name: "second_testator_existing_wills_countries" }} />}
+                      {secondTestatorFields
+                        .filter((def) =>
+                          (def.name !== "second_testator_asset_structures_description" || values.second_testator_asset_structures === "yes") &&
+                          (def.name !== "second_testator_digital_assets_executor_access" || values.second_testator_digital_assets === "yes") &&
+                          (def.name !== "second_testator_existing_wills_countries" || values.second_testator_existing_wills === "yes"),
+                        )
+                        .map((def) => <Field key={def.name} def={def} />)}
                     </>
                   )}
                   {values.asset_structures === "yes" && (
@@ -692,9 +769,10 @@ export default function QuestionnairePrototype() {
                       }}
                     />
                   )}
-                  {personalFields.slice(18, 21).map((def) => (
+                  {personalFields.slice(18, 20).map((def) => (
                     <Field key={def.name} def={def} />
                   ))}
+                  <Field def={personalFields[20]} />
                   {values.digital_assets === "yes" && (
                     <Field
                       def={{
@@ -705,9 +783,7 @@ export default function QuestionnairePrototype() {
                       }}
                     />
                   )}
-                  {personalFields.slice(18, 19).map((def) => (
-                    <Field key={def.name} def={def} />
-                  ))}
+                  <Field def={personalFields[21]} />
                   {values.existing_wills === "yes" && (
                     <Field
                       def={{
@@ -716,7 +792,7 @@ export default function QuestionnairePrototype() {
                       }}
                     />
                   )}
-                  {personalFields.slice(19).map((def) => (
+                  {personalFields.slice(22).map((def) => (
                     <Field key={def.name} def={def} />
                   ))}
                 </div>

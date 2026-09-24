@@ -3,32 +3,87 @@ import { createEspoRecord } from "@/lib/espo";
 
 export const runtime = "nodejs";
 
-function validateSubmission(data: QuestionnaireData) {
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^\+[1-9]\d{7,14}$/;
+const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const EID_PATTERN = /^784-(?:19|20)\d{2}-\d{7}-\d$/;
+
+function validDate(value: string) {
+  if (!DATE_PATTERN.test(value)) return false;
+  const date = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
+function adultDate(value: string) {
+  const date = new Date(`${value}T00:00:00Z`);
+  const now = new Date();
+  const cutoff = new Date(Date.UTC(now.getUTCFullYear() - 18, now.getUTCMonth(), now.getUTCDate()));
+  return date <= cutoff;
+}
+
+function filterApplicableData(data: QuestionnaireData): QuestionnaireData {
+  const filtered = { ...data };
+  const isMirror = data.will_type === "mirror";
+  for (const key of Object.keys(filtered)) {
+    const conditional =
+      (key.startsWith("second_testator_") && !isMirror) ||
+      (key === "asset_structures_description" && data.asset_structures !== "yes") ||
+      (key === "digital_assets_executor_access" && data.digital_assets !== "yes") ||
+      (key === "existing_wills_countries" && data.existing_wills !== "yes") ||
+      (key === "second_testator_asset_structures_description" && data.second_testator_asset_structures !== "yes") ||
+      (key === "second_testator_digital_assets_executor_access" && data.second_testator_digital_assets !== "yes") ||
+      (key === "second_testator_existing_wills_countries" && data.second_testator_existing_wills !== "yes") ||
+      (key.startsWith("pets_") && data.has_pets !== "yes");
+    if (conditional) delete filtered[key];
+  }
+  for (const group of ["adult_children", "minor_children", "other_parents", "temporary_guardians", "permanent_guardians"]) {
+    if ((group === "adult_children" && data.has_adult_children !== "yes") ||
+        (group !== "adult_children" && data.has_minor_children !== "yes")) {
+      delete filtered[group];
+    }
+  }
+  return filtered;
+}
+
+function validateSubmission(input: QuestionnaireData) {
+  const data = filterApplicableData(input);
+  if (data.will_type !== "single" && data.will_type !== "mirror") return "Kies Single Will of Mirror Will.";
   const email = String(data.testator_email ?? "");
   const phone = String(data.testator_phone ?? "").replace(/[ .()-]/g, "");
   const dob = String(data.testator_dob ?? "");
   if (!String(data.testator_full_name ?? "").trim() || !email || !phone) return "Vul je naam, e-mailadres en telefoonnummer in.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Vul een geldig e-mailadres in.";
-  if (!/^\+[1-9]\d{7,14}$/.test(phone)) return "Vul een geldig internationaal telefoonnummer in, beginnend met +.";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) return "Vul de geboortedatum in als yyyy-mm-dd.";
-  const date = new Date(`${dob}T00:00:00Z`);
-  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== dob) return "Vul een bestaande geboortedatum in.";
-  const now = new Date();
-  const cutoff = new Date(Date.UTC(now.getUTCFullYear() - 18, now.getUTCMonth(), now.getUTCDate()));
-  if (date > cutoff) return "Je moet minimaal 18 jaar oud zijn om een testament te registreren.";
-  if (data.testator_eid && !/^784-(?:19|20)\d{2}-\d{7}-\d$/.test(String(data.testator_eid))) return "Vul het Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.";
+  if (data.has_adult_children !== "yes" && data.has_adult_children !== "no") return "Beantwoord de vraag over meerderjarige kinderen met Ja of Nee.";
+  if (data.has_minor_children !== "yes" && data.has_minor_children !== "no") return "Beantwoord de vraag over minderjarige kinderen met Ja of Nee.";
+  if (!EMAIL_PATTERN.test(email)) return "Vul een geldig e-mailadres in, bijvoorbeeld naam@voorbeeld.nl.";
+  if (!PHONE_PATTERN.test(phone)) return "Vul een geldig internationaal telefoonnummer in, bijvoorbeeld +31612345678.";
+  if (!validDate(dob)) return "Vul een bestaande geboortedatum in als yyyy-mm-dd.";
+  if (!adultDate(dob)) return "Je moet minimaal 18 jaar oud zijn om een testament te registreren.";
+  if (data.testator_eid && !EID_PATTERN.test(String(data.testator_eid))) return "Vul het Emirates ID in als 784-YYYY-XXXXXXX-X; het jaar moet met 19 of 20 beginnen.";
+  for (const [name, value] of Object.entries(data)) {
+    if (name.endsWith("_dob") && name !== "testator_dob" && value && !validDate(String(value))) return "Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.";
+    if (name.endsWith("_eid") && name !== "testator_eid" && value && !EID_PATTERN.test(String(value))) return "Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X.";
+  }
+  for (const group of ["executors", "beneficiaries", "adult_children", "minor_children", "other_parents", "temporary_guardians", "permanent_guardians"]) {
+    const people = data[group];
+    if (!Array.isArray(people)) continue;
+    for (const person of people) {
+      if (!person || typeof person !== "object") continue;
+      const personData = person as QuestionnaireData;
+      if (personData.dob && !validDate(String(personData.dob))) return "Vul iedere geboortedatum in als yyyy-mm-dd, bijvoorbeeld 1980-06-30.";
+      if (personData.eid && !EID_PATTERN.test(String(personData.eid))) return "Vul ieder Emirates ID in als 784-YYYY-XXXXXXX-X.";
+    }
+  }
   if (data.will_type === "mirror") {
     const secondName = String(data.second_testator_full_name ?? "").trim();
     const secondEmail = String(data.second_testator_email ?? "");
     const secondPhone = String(data.second_testator_phone ?? "").replace(/[ .()-]/g, "");
     const secondDob = String(data.second_testator_dob ?? "");
     if (!secondName || !secondEmail || !secondPhone || !secondDob) return "Voor een Mirror Will zijn de gegevens van beide testatoren verplicht.";
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(secondEmail)) return "Vul een geldig e-mailadres in voor de tweede testator.";
-    if (!/^\+[1-9]\d{7,14}$/.test(secondPhone)) return "Vul een geldig internationaal telefoonnummer in voor de tweede testator.";
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(secondDob)) return "Vul de geboortedatum van de tweede testator in als yyyy-mm-dd.";
-    const secondDate = new Date(secondDob + "T00:00:00Z");
-    if (Number.isNaN(secondDate.getTime()) || secondDate.toISOString().slice(0, 10) !== secondDob) return "Vul een bestaande geboortedatum in voor de tweede testator.";
-    if (data.second_testator_eid && !/^784-(?:19|20)\d{2}-\d{7}-\d$/.test(String(data.second_testator_eid))) return "Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X.";
+    if (!EMAIL_PATTERN.test(secondEmail)) return "Vul een geldig e-mailadres in voor de tweede testator.";
+    if (!PHONE_PATTERN.test(secondPhone)) return "Vul een geldig internationaal telefoonnummer in voor de tweede testator.";
+    if (!validDate(secondDob)) return "Vul een bestaande geboortedatum in voor de tweede testator.";
+    if (!adultDate(secondDob)) return "De tweede testator moet minimaal 18 jaar oud zijn.";
+    if (data.second_testator_eid && !EID_PATTERN.test(String(data.second_testator_eid))) return "Vul het Emirates ID van de tweede testator in als 784-YYYY-XXXXXXX-X.";
   }
   return null;
 }
@@ -36,6 +91,7 @@ function validateSubmission(data: QuestionnaireData) {
 type QuestionnaireData = Record<string, unknown>;
 
 const questionnaireFields = [
+  "will_type",
   "testator_full_name",
   "testator_dob",
   "testator_birth_place",
@@ -69,13 +125,28 @@ const questionnaireFields = [
   "second_testator_email",
   "second_testator_phone",
   "second_testator_address",
+  "second_testator_marital_status",
+  "second_testator_has_partner",
+  "second_testator_has_children",
   "second_testator_tax_residency",
+  "second_testator_residence_history_20_years",
+  "second_testator_profession",
+  "second_testator_employer_company",
+  "second_testator_asset_structures",
+  "second_testator_asset_structures_description",
   "second_testator_asset_countries",
   "second_testator_asset_types",
+  "second_testator_digital_assets",
+  "second_testator_digital_assets_executor_access",
   "second_testator_existing_wills",
   "second_testator_existing_wills_countries",
+  "second_testator_pep",
+  "second_testator_business_countries",
   "second_testator_joint_assets_ownership",
+  "second_testator_organ_donor",
   "second_testator_funeral_type",
+  "second_testator_funeral_country",
+  "second_testator_funeral_instructions",
   "has_adult_children",
   "has_minor_children",
   "financial_guardian_full_name",
@@ -196,6 +267,7 @@ const reportSections: Array<{
     title: "Jouw gegevens",
     fields: [
       ["testator_full_name", "Volledige naam"],
+      ["will_type", "Type testament"],
       ["testator_dob", "Geboortedatum"],
       ["testator_birth_place", "Geboorteplaats"],
       ["testator_nationality", "Nationaliteit"],
@@ -249,13 +321,28 @@ const reportSections: Array<{
       ["second_testator_email", "E-mailadres tweede testator"],
       ["second_testator_phone", "Telefoonnummer tweede testator"],
       ["second_testator_address", "Adres tweede testator"],
+      ["second_testator_marital_status", "Burgerlijke staat tweede testator"],
+      ["second_testator_has_partner", "Partner tweede testator"],
+      ["second_testator_has_children", "Kinderen tweede testator"],
       ["second_testator_tax_residency", "Fiscale woonlanden tweede testator"],
+      ["second_testator_residence_history_20_years", "Woonhistorie tweede testator afgelopen 20 jaar"],
+      ["second_testator_profession", "Beroep tweede testator"],
+      ["second_testator_employer_company", "Werkgever of bedrijf tweede testator"],
+      ["second_testator_asset_structures", "Vermogensstructuur tweede testator"],
+      ["second_testator_asset_structures_description", "Beschrijving vermogensstructuur tweede testator"],
       ["second_testator_asset_countries", "Landen vermogen tweede testator"],
       ["second_testator_asset_types", "Vermogen tweede testator"],
+      ["second_testator_digital_assets", "Digitale bezittingen tweede testator"],
+      ["second_testator_digital_assets_executor_access", "Toegang executeur tot digitale bezittingen tweede testator"],
       ["second_testator_existing_wills", "Bestaande testamenten tweede testator"],
       ["second_testator_existing_wills_countries", "Landen bestaande testamenten tweede testator"],
+      ["second_testator_pep", "Politiek prominent persoon tweede testator"],
+      ["second_testator_business_countries", "Landen waarin tweede testator zaken doet"],
       ["second_testator_joint_assets_ownership", "Eigendomsaandelen gezamenlijke bezittingen"],
+      ["second_testator_organ_donor", "Orgaandonor tweede testator"],
       ["second_testator_funeral_type", "Uitvaartwens tweede testator"],
+      ["second_testator_funeral_country", "Land van uitvaart tweede testator"],
+      ["second_testator_funeral_instructions", "Overige uitvaartwensen tweede testator"],
     ],
   },
   {
@@ -448,11 +535,12 @@ const espoDateTime = (date: Date) =>
 
 export async function POST(request: Request) {
   try {
-    const data = (await request.json()) as QuestionnaireData;
-    const validationError = validateSubmission(data);
+    const rawData = (await request.json()) as QuestionnaireData;
+    const validationError = validateSubmission(rawData);
     if (validationError) {
       return NextResponse.json({ success: false, message: validationError }, { status: 400 });
     }
+    const data = filterApplicableData(rawData);
     const fullName = text(data.testator_full_name);
     const email = text(data.testator_email);
     const phone = text(data.testator_phone);

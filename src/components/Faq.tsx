@@ -36,6 +36,32 @@ export default function Faq({ items }: FaqProps) {
     requestAnimationFrame(() => document.getElementById(`faq-${id}`)?.scrollIntoView({ block: "start" }));
   }, []);
   const toggleAll = (expand: boolean) => setOpen(expand ? [...new Set(filteredItems.map((item) => item.id))] : []);
+  const linkedText = (value: string) => {
+    const parts = value.split(/(https?:\/\/[^\s]+)/g);
+    return parts.map((part, index) => {
+      if (!part.startsWith("http")) return part;
+      const clean = part.replace(/[).,]+$/, "");
+      const href = clean.includes("rechtspraak.nl")
+        ? "https://www.rechtspraak.nl/onderwerpen/voogdij/aanwijzen-voogd-formulier"
+        : clean.includes("bodymuseum")
+          ? "https://ku.ac.ae/bodymuseum/"
+          : clean.includes("difccourts.ae")
+            ? "https://eregistry.difccourts.ae/will-draftsmen"
+            : clean.includes("notaris.nl/page/het-opvolgersarchief")
+              ? "https://www.notaris.nl/page/het-opvolgersarchief"
+              : clean;
+      const label = href.includes("rechtspraak")
+        ? "het formulier om een voogd aan te wijzen"
+        : href.includes("bodymuseum")
+          ? "het Body Museum van Khalifa University"
+          : href.includes("difccourts")
+            ? "het Register of Wills Draftsmen van DIFC"
+            : href.includes("opvolgersarchief")
+              ? "het Opvolgersarchief van Notaris.nl"
+              : clean;
+      return <a key={index} href={href}>{label}</a>;
+    });
+  };
 
   return (
     <section id="faq" className="section faq">
@@ -66,15 +92,11 @@ export default function Faq({ items }: FaqProps) {
                 <strong>{item.question}</strong>
               </summary>
              <div className="answer">
-  {item.answer ? (
-    String(item.answer)
-      .split(/\n{2,}/)
-      .map((paragraph, paragraphIndex) => (
-        <p key={paragraphIndex}>
-          {paragraph}
-        </p>
-      ))
-  ) : (
+          {item.answer ? (
+            String(item.answer).split(/\n{2,}/).map((paragraph, paragraphIndex) => (
+              <p key={paragraphIndex}>{linkedText(paragraph)}</p>
+            ))
+          ) : (
     <p>Answer not loaded.</p>
   )}
               </div>

@@ -64,20 +64,7 @@ Elke partner ontvangt een concept van zijn eigen testament. Je kunt je eigen tek
   },
   {
     title: "Wat je krijgt en wat het kost",
-    body: `In de prijs voor een Mirror Will zijn opgenomen:
-
-een persoonlijk videogesprek van een uur met Hilda;
-juridisch en fiscaal onderzoek voor beide partners;
-onderzoek naar bestaande buitenlandse testamenten;
-onderzoek naar internationale regels en verdragen;
-twee afzonderlijk opgestelde ADJD-testamenten;
-fiscale bepalingen die bij de nalatenschap passen;
-verwerking van wijzigingen;
-twee Arabische vertalingen, opgesteld door een erkende rechtbankvertaler;
-begeleiding bij de registratie van je testament;
-en als eindproduct twee gelegaliseerde testamenten.
-
-Bij het vergelijken van verschillende aanbieders is het belangrijk om te controleren of een prijs geldt voor één of twee testamenten en of VAT, fiscaal onderzoek, Arabische vertalingen, wijzigingen en registratiebegeleiding zijn inbegrepen.
+    body: `Bij het vergelijken van verschillende aanbieders is het belangrijk om te controleren of een prijs geldt voor één of twee testamenten en of VAT, fiscaal onderzoek, Arabische vertalingen, wijzigingen en registratiebegeleiding zijn inbegrepen.
 
 Er zijn helaas veel oplichters actief in de UAE, en daarom is het van belang dat je controleert of degene die jouw testament opstelt in dit register is opgenomen: DIFC-Courts
 
@@ -85,7 +72,7 @@ Staat de betreffende persoon er niet in, dan heb je met een fraudeur te maken di
   },
   {
     title: "Zo verloopt het",
-    body: `We beginnen met een videogesprek van een uur. mr. Hilda van der Tuin bespreekt met je wat je wilt regelen en vraagt naar je gezin, nationaliteiten, eerdere woonplaatsen, uitvaartwensen, huisdieren, of je wel of niet donor wilt zijn, erfgenamen, vermogen en bestaande testamenten.
+    body: `We beginnen met een videogesprek van een uur. We bespreken wat je wilt regelen en vragen naar je gezin, nationaliteiten, eerdere woonplaatsen, uitvaartwensen, huisdieren, of je wel of niet donor wilt zijn, erfgenamen, vermogen en bestaande testamenten.
 
 Daarna volgt het juridische en fiscale onderzoek. Op basis daarvan stelt Hilda het estate plan en de testamenten op.
 
@@ -93,13 +80,7 @@ Je ontvangt een concept van je testament en kunt wijzigingen doorgeven. Bij Mirr
 
 Op dit moment duurt het volledige proces ongeveer zes weken, maar dit is wel afhankelijk van je eigen reactiesnelheid.
 
-Als je na het gesprek besluit geen testament af te nemen, dan brengen wij de werkelijk bestede tijd in rekening op basis van ons uurtarief van AED 970 inclusief VAT.
-
-mr. Hilda van der Tuin behandelt jouw dossier zelf. Zij voert het gesprek, doet het onderzoek, stelt de testamenten op en verwerkt je wijzigingen. Je dossier wordt niet na het eerste gesprek overgedragen aan een junior medewerker of een anoniem typingteam.
-
-Hilda is advocaat, notaris en mediator in de Verenigde Arabische Emiraten. Zij heeft een Master of Laws in notarieel recht en is Registered Wills Draftsman voor DIFC. Zij werkt al vijftien jaar in de Verenigde Arabische Emiraten.
-
-Bij de Koninklijke Notariële Beroepsorganisatie in Den Haag was Hilda manager van de afdelingen Praktijkzaken en Juridische Zaken (hieronder vallen ook het voor notarissen toepasselijke tuchtrecht en het WPNR tijdschrift). Zij gaf leiding aan twintig juristen en maakte deel uit van het MT.`,
+Als je na het gesprek besluit geen testament af te nemen, dan brengen wij de werkelijk bestede tijd in rekening op basis van ons uurtarief van AED 970 inclusief VAT.`,
   },
   {
     title: "Volledige estate planning",
