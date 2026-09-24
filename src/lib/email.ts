@@ -8,6 +8,7 @@ type ConfirmationEmail = {
   fullName: string;
   email: string;
   willType: string;
+  additionalEmails?: Array<string | null | undefined>;
   notificationEmail?: string | null;
 };
 
@@ -68,6 +69,7 @@ export async function sendQuestionnaireConfirmation({
   fullName,
   email,
   willType,
+  additionalEmails = [],
   notificationEmail,
 }: ConfirmationEmail) {
   const host = requiredEnvironment("SMTP_HOST");
@@ -77,7 +79,7 @@ export async function sendQuestionnaireConfirmation({
   const from = environmentValue("SMTP_FROM") || user;
   const replyTo = environmentValue("SMTP_REPLY_TO") || from;
   const label = willType === "mirror" ? "Mirror Will" : "Single Will";
-  const recipients = [email, notificationEmail?.trim()].filter(
+  const recipients = [email, ...additionalEmails, notificationEmail?.trim()].filter(
     (address, index, all): address is string =>
       Boolean(address) && all.indexOf(address) === index,
   );

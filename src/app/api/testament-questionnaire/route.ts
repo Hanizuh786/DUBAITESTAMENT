@@ -664,6 +664,7 @@ export async function POST(request: Request) {
         fullName,
         email,
         willType: String(data.will_type),
+        additionalEmails: [text(data.second_testator_email)],
         notificationEmail: text(process.env.QUESTIONNAIRE_NOTIFICATION_EMAIL),
       });
     } catch (emailError) {
