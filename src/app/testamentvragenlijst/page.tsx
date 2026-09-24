@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import QuestionnairePrototype from "@/components/QuestionnairePrototype";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Testamentvragenlijst",
   description: "Vul de Nederlandse testamentvragenlijst in voor je Single Will of Mirror Will in de UAE.",

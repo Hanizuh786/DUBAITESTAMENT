@@ -9,6 +9,9 @@ import propertyImage from "../../content/images/img3.jpg";
 import familyImage from "../../content/images/img4.jpg";
 import draftingImage from "../../content/images/img5.jpg";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const sectionImages: {
   src: StaticImageData;
   alt: string;
