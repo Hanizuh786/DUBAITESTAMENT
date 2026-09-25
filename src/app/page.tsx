@@ -9,9 +9,6 @@ import propertyImage from "../../content/images/img3.jpg";
 import familyImage from "../../content/images/img4.jpg";
 import draftingImage from "../../content/images/img5.jpg";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
 const sectionImages: {
   src: StaticImageData;
   alt: string;
@@ -134,12 +131,6 @@ export default function Home() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
-        }}
-      />
       <header className="header">
         <div><a className="brand" href="#top">DUBAI<span>TESTAMENT</span>.NL</a><small className="serviceLine">Een dienst van Holland Legal Services FZ-LLC</small></div>
         <nav aria-label="Hoofdnavigatie">
@@ -234,6 +225,12 @@ export default function Home() {
           <p><a href="https://www.dutchlawyerindeuae.nl/privacy-policy.html">Privacyverklaring</a></p>
         </div>
       </footer>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
+        }}
+      />
     </>
   );
 }
