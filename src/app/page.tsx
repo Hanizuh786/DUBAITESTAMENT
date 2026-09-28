@@ -70,7 +70,21 @@ export default function Home() {
         description:
           "Cross-border estate planning en UAE-testamenten voor expats.",
         inLanguage: "nl-NL",
-        publisher: { "@id": `${siteUrl}#legal-service` },
+        publisher: { "@id": `${siteUrl}#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${siteUrl}#organization`,
+        name: "Holland Legal Services FZ-LLC",
+        legalName: "Holland Legal Services FZ-LLC",
+        alternateName: "Dutch Lawyer in de UAE",
+        url: "https://www.holland-legal-services.ae/",
+        logo: `${siteUrl}images/dubaitestament-logo.svg`,
+        sameAs: [
+          "https://www.dutchlawyerindeuae.nl/",
+          "https://www.facebook.com/dutchlawyerindeuae/",
+          "https://www.youtube.com/c/EenbedrijfstarteninDubai",
+        ],
       },
       {
         "@type": "LegalService",
@@ -78,6 +92,9 @@ export default function Home() {
         name: "Holland Legal Services FZ-LLC",
         alternateName: ["Dutch Lawyer in de UAE", "DubaiTestament.nl"],
         url: siteUrl,
+        legalName: "Holland Legal Services FZ-LLC",
+        brand: { "@id": `${siteUrl}#brand` },
+        provider: { "@id": `${siteUrl}#organization` },
         description:
           "Juridische en fiscale begeleiding bij UAE-testamenten en internationale estate planning voor expats.",
         areaServed: [
@@ -113,6 +130,13 @@ export default function Home() {
             itemOffered: { "@type": "Service", name },
           })),
         },
+      },
+      {
+        "@type": "Brand",
+        "@id": `${siteUrl}#brand`,
+        name: "DubaiTestament.nl",
+        url: siteUrl,
+        logo: `${siteUrl}images/dubaitestament-logo.svg`,
       },
       {
         "@type": "FAQPage",
@@ -169,12 +193,13 @@ export default function Home() {
 
     <h2>Gegevens voor je UAE-testament</h2>
     <p>Wil je een Single Will of een Mirror Will laten opstellen? Vul dan eerst de testamentvragenlijst in. We gebruiken je antwoorden om je persoonlijke situatie, je vermogen en je bestaande testamenten in kaart te brengen.</p>
+    <p>Lees ook over <a href="#adjd-wills">ADJD-testamenten</a> en <a href="#difc-wills">DIFC-testamenten</a> binnen onze volledige estate planning.</p>
     <a className="button" href="/testamentvragenlijst">Open de testamentvragenlijst</a>
   </div>
 </section>
        
         {landingSections.slice(1).map((section, index) => (
-          <section className={`section ${index % 2 ? "tint" : ""}`} key={section.title}>
+          <section id={section.title === "Wat je krijgt en wat het kost" ? "adjd-wills" : section.title === "Volledige estate planning" ? "difc-wills" : undefined} className={`section ${index % 2 ? "tint" : ""}`} key={section.title}>
             <div className="wrap grid">
               <div className="sectionIntro">
                 <p className="sectionNo">{String(index + 1).padStart(2, "0")}</p>

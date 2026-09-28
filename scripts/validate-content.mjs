@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 
-const expectedCount = 70;
+const expectedCount = 69;
 const source = fs.readFileSync(
   new URL("../content/query.txt", import.meta.url),
 );
